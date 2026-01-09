@@ -6,8 +6,17 @@ const CLIENT_SECRET = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
 let accessToken = null;
 let tokenExpiry = null;
 
+// Check if Spotify credentials are available
+export function hasSpotifyCredentials() {
+  return !!(CLIENT_ID && CLIENT_SECRET);
+}
+
 // Get Spotify access token
 export async function getAccessToken() {
+  if (!hasSpotifyCredentials()) {
+    throw new Error('Spotify credentials not configured');
+  }
+
   if (accessToken && tokenExpiry && Date.now() < tokenExpiry) {
     return accessToken;
   }
@@ -127,6 +136,11 @@ export async function getRandomPopularSongs(count = 35) {
 
 // Get a curated list of iconic songs (fallback/preset mode)
 export async function getCuratedSongs() {
+  if (!hasSpotifyCredentials()) {
+    console.warn('Spotify credentials not found, using fallback mode with local songs');
+    return null; // Signal to use fallback
+  }
+
   const iconicSongs = [
     { artist: 'The Beatles', track: 'Hey Jude', year: 1968 },
     { artist: 'Queen', track: 'Bohemian Rhapsody', year: 1975 },
@@ -141,40 +155,46 @@ export async function getCuratedSongs() {
   ];
 
   const songs = [];
-  const token = await getAccessToken();
+  
+  try {
+    const token = await getAccessToken();
 
-  for (const song of iconicSongs) {
-    try {
-      const response = await axios.get('https://api.spotify.com/v1/search', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          q: `artist:${song.artist} track:${song.track}`,
-          type: 'track',
-          limit: 1,
-          market: 'US',
-        },
-      });
+    for (const song of iconicSongs) {
+      try {
+        const response = await axios.get('https://api.spotify.com/v1/search', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            q: `artist:${song.artist} track:${song.track}`,
+            type: 'track',
+            limit: 1,
+            market: 'US',
+          },
+        });
 
-      if (response.data.tracks.items.length > 0) {
-        const track = response.data.tracks.items[0];
-        if (track.preview_url) {
-          songs.push({
-            id: track.id,
-            title: track.name,
-            artist: track.artists.map(a => a.name).join(', '),
-            year: song.year,
-            previewUrl: track.preview_url,
-            albumCover: track.album.images[0]?.url,
-            popularity: track.popularity,
-          });
+        if (response.data.tracks.items.length > 0) {
+          const track = response.data.tracks.items[0];
+          if (track.preview_url) {
+            songs.push({
+              id: track.id,
+              title: track.name,
+              artist: track.artists.map(a => a.name).join(', '),
+              year: song.year,
+              previewUrl: track.preview_url,
+              albumCover: track.album.images[0]?.url,
+              popularity: track.popularity,
+            });
+          }
         }
+      } catch (error) {
+        console.error(`Error fetching ${song.track}:`, error);
       }
-    } catch (error) {
-      console.error(`Error fetching ${song.track}:`, error);
     }
-  }
 
-  return songs;
+    return songs;
+  } catch (error) {
+    console.error('Error getting curated songs:', error);
+    return null; // Return null to signal fallback mode
+  }
 }

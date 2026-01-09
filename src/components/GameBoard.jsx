@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getCuratedSongs } from '../services/spotifyService';
+import { youTubeSongs as fallbackSongs } from '../data/songs';
 import Timeline from './Timeline';
 import SongPlayer from './SongPlayer';
 import PlacementButtons from './PlacementButtons';
@@ -39,15 +40,21 @@ export default function GameBoard({ teams, winningScore }) {
     try {
       setGamePhase('loading');
       const songs = await getCuratedSongs();
-      setAvailableSongs(songs);
-      if (songs.length > 0) {
-        drawNewSong(songs, []);
+      
+      // Use fallback if Spotify returns null or empty
+      if (!songs || songs.length === 0) {
+        console.log('Using fallback songs (YouTube)');
+        setAvailableSongs(fallbackSongs);
+        drawNewSong(fallbackSongs, []);
       } else {
-        setGamePhase('error');
+        console.log('Using Spotify songs');
+        setAvailableSongs(songs);
+        drawNewSong(songs, []);
       }
     } catch (error) {
-      console.error('Error loading songs:', error);
-      setGamePhase('error');
+      console.error('Error loading songs, using fallback:', error);
+      setAvailableSongs(fallbackSongs);
+      drawNewSong(fallbackSongs, []);
     }
   }, [drawNewSong]);
 

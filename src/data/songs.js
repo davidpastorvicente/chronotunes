@@ -1,4 +1,4 @@
-export const songs = [
+export const songsData = [
   // 1960s
   { id: 1, title: "I Want to Hold Your Hand", artist: "The Beatles", year: 1963, youtubeId: "jenWdylTtzs" },
   { id: 2, title: "Like a Rolling Stone", artist: "Bob Dylan", year: 1965, youtubeId: "IwOfCgkyEj0" },
@@ -49,7 +49,8 @@ export const songs = [
   { id: 35, title: "Flowers", artist: "Miley Cyrus", year: 2023, youtubeId: "G7KNmW9a75Y" },
 ];
 
-export function getRandomSong(excludeIds = []) {
-  const availableSongs = songs.filter(song => !excludeIds.includes(song.id));
-  return availableSongs[Math.floor(Math.random() * availableSongs.length)];
-}
+// Add previewUrl dynamically for YouTube songs
+export const youTubeSongs = songsData.map(song => ({
+  ...song,
+  previewUrl: `https://www.youtube.com/embed/${song.youtubeId}?autoplay=1&controls=0`
+}));
