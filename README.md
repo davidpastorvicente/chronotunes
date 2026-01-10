@@ -57,11 +57,10 @@ npm run dev
 
 ### Adding New Songs
 
-To add songs, edit `src/data/songs.js` and add entries **without YouTube IDs**:
+To add songs, simply edit `src/data/songs.js` and add entries **without YouTube IDs**. You can place them anywhere in the file - no need to worry about IDs or ordering!
 
 ```javascript
 {
-  id: 252,
   title: "Your Song Title",
   artist: "Artist Name",
   year: 2024
@@ -82,7 +81,6 @@ You can also add songs with YouTube IDs directly:
 
 ```javascript
 {
-  id: 252,
   title: "Your Song Title",
   artist: "Artist Name",
   year: 2024,

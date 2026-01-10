@@ -19,7 +19,7 @@ export default function GameBoard({ teams, winningScore }) {
   const [winner, setWinner] = useState(null);
 
   const drawNewSong = useCallback((songs, usedIds) => {
-    const availableToPlay = songs.filter(song => !usedIds.includes(song.id));
+    const availableToPlay = songs.filter(song => !usedIds.includes(song.youtubeId));
 
     if (availableToPlay.length === 0) {
       setGamePhase('gameOver');
@@ -30,7 +30,7 @@ export default function GameBoard({ teams, winningScore }) {
     const song = availableToPlay[randomIndex];
 
     setCurrentSong(song);
-    setUsedSongIds([...usedIds, song.id]);
+    setUsedSongIds([...usedIds, song.youtubeId]);
     setGamePhase('playing');
     setLastPlacement(null);
   }, []);

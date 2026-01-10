@@ -16,17 +16,16 @@ def extract_songs_from_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Pattern to match songs with or without youtubeId
-    pattern = r'\{\s*id:\s*(\d+),\s*title:\s*"([^"]+)",\s*artist:\s*"([^"]+)",\s*year:\s*(\d+)(?:,\s*youtubeId:\s*"([^"]*)")?\s*\}'
+    # Pattern to match songs with or without youtubeId (no id field)
+    pattern = r'\{\s*title:\s*"([^"]+)",\s*artist:\s*"([^"]+)",\s*year:\s*(\d+)(?:,\s*youtubeId:\s*"([^"]*)")?\s*\}'
     
     songs = []
     for match in re.finditer(pattern, content):
         song = {
-            'id': int(match.group(1)),
-            'title': match.group(2),
-            'artist': match.group(3),
-            'year': int(match.group(4)),
-            'youtubeId': match.group(5) if match.group(5) else None
+            'title': match.group(1),
+            'artist': match.group(2),
+            'year': int(match.group(3)),
+            'youtubeId': match.group(4) if match.group(4) else None
         }
         songs.append(song)
     
@@ -51,18 +50,28 @@ def update_songs_file(filepath, updates):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    for song_id, youtube_id in updates.items():
-        # Pattern to find song by ID and add/update youtubeId
+    for song_key, youtube_id in updates.items():
+        title, artist = song_key
+        
+        # Pattern to find song by title and artist, then add/update youtubeId
         # First try to update existing youtubeId
-        pattern_with_id = rf'(\{{\s*id:\s*{song_id},\s*title:[^}}]+youtubeId:\s*")[^"]*(")' 
-        new_content = re.sub(pattern_with_id, rf'\1{youtube_id}\2', content, flags=re.DOTALL)
+        pattern_with_id = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*")[^"]*(")' 
+        
+        def replacer_with_id(match):
+            return match.group(1) + youtube_id + match.group(2)
+        
+        new_content = re.sub(pattern_with_id, replacer_with_id, content, flags=re.DOTALL)
         
         # If no change, song doesn't have youtubeId yet, add it
         if new_content == content:
-            pattern_without_id = rf'(\{{\s*id:\s*{song_id},\s*title:\s*"[^"]+",\s*artist:\s*"[^"]+",\s*year:\s*\d+)(\s*\}})'
+            pattern_without_id = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+)(\s*\}})'
+            
+            def replacer_without_id(match):
+                return match.group(1) + f', youtubeId: "{youtube_id}"' + match.group(2)
+            
             new_content = re.sub(
                 pattern_without_id, 
-                rf'\1, youtubeId: "{youtube_id}"\2', 
+                replacer_without_id, 
                 content, 
                 flags=re.DOTALL
             )
@@ -111,7 +120,8 @@ def main():
         youtube_id = fetch_youtube_id(ytmusic, song['title'], song['artist'])
         
         if youtube_id:
-            updates[song['id']] = youtube_id
+            # Use (title, artist) as key since we don't have IDs anymore
+            updates[(song['title'], song['artist'])] = youtube_id
             print(f"  ✓ Found: {youtube_id}")
         else:
             failed.append(song)
@@ -138,7 +148,7 @@ def main():
     if failed:
         print("\n⚠️  Failed to find YouTube IDs for:")
         for song in failed:
-            print(f"  - ID {song['id']}: {song['title']} by {song['artist']}")
+            print(f"  - {song['title']} by {song['artist']} ({song['year']})")
         print("\nYou may need to manually add these YouTube IDs.")
     
     print("\n✅ Done!")
