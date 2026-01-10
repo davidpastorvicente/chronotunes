@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getCuratedSongs } from '../services/spotifyService';
-import { youTubeSongs as fallbackSongs } from '../data/songs';
+import { songsWithPreview } from '../data/songs';
 import Timeline from './Timeline';
 import SongPlayer from './SongPlayer';
 import PlacementButtons from './PlacementButtons';
@@ -14,7 +13,7 @@ export default function GameBoard({ teams, winningScore }) {
   );
   const [availableSongs, setAvailableSongs] = useState([]);
   const [usedSongIds, setUsedSongIds] = useState([]);
-  const [gamePhase, setGamePhase] = useState('loading');
+  const [gamePhase, setGamePhase] = useState('playing');
   const [lastPlacement, setLastPlacement] = useState(null);
   const [scores, setScores] = useState(teams.map(() => 0));
   const [winner, setWinner] = useState(null);
@@ -37,25 +36,8 @@ export default function GameBoard({ teams, winningScore }) {
   }, []);
 
   const loadSongs = useCallback(async () => {
-    try {
-      setGamePhase('loading');
-      const songs = await getCuratedSongs();
-      
-      // Use fallback if Spotify returns null or empty
-      if (!songs || songs.length === 0) {
-        console.log('Using fallback songs (YouTube)');
-        setAvailableSongs(fallbackSongs);
-        drawNewSong(fallbackSongs, []);
-      } else {
-        console.log('Using Spotify songs');
-        setAvailableSongs(songs);
-        drawNewSong(songs, []);
-      }
-    } catch (error) {
-      console.error('Error loading songs, using fallback:', error);
-      setAvailableSongs(fallbackSongs);
-      drawNewSong(fallbackSongs, []);
-    }
+    setAvailableSongs(songsWithPreview);
+    drawNewSong(songsWithPreview, []);
   }, [drawNewSong]);
 
   useEffect(() => {
@@ -129,27 +111,6 @@ export default function GameBoard({ teams, winningScore }) {
         </div>
       </div>
 
-      {gamePhase === 'loading' && (
-        <div className="loading-screen">
-          <div className="loading-content">
-            <h2>🎵 Loading Songs from Spotify...</h2>
-            <div className="loading-spinner"></div>
-          </div>
-        </div>
-      )}
-
-      {gamePhase === 'error' && (
-        <div className="error-screen">
-          <div className="error-content">
-            <h2>❌ Error Loading Songs</h2>
-            <p>Please check your Spotify API credentials and try again.</p>
-            <button className="retry-button" onClick={loadSongs}>
-              Retry
-            </button>
-          </div>
-        </div>
-      )}
-
       {gamePhase === 'gameOver' && winner !== null && (
         <div className="game-over">
           <div className="winner-announcement">
@@ -167,7 +128,7 @@ export default function GameBoard({ teams, winningScore }) {
         </div>
       )}
 
-      {gamePhase !== 'gameOver' && gamePhase !== 'loading' && gamePhase !== 'error' && (
+      {gamePhase !== 'gameOver' && (
         <>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
             <div className="current-turn">
