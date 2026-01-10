@@ -8,13 +8,14 @@
 .game-setup h1 {
   font-size: 3rem;
   margin-bottom: 0.5rem;
-  color: #ff6b6b;
+  color: #e94560;
 }
 
 .subtitle {
   font-size: 1.2rem;
-  color: #666;
+  color: #f0f0f0;
   margin-bottom: 2rem;
+  font-weight: 500;
 }
 
 .setup-form {
@@ -53,13 +54,13 @@
 }
 
 .team-selector button:hover {
-  border-color: #ff6b6b;
+  border-color: #e94560;
 }
 
 .team-selector button.active {
-  background: #ff6b6b;
+  background: #e94560;
   color: white;
-  border-color: #ff6b6b;
+  border-color: #e94560;
 }
 
 .team-names {
@@ -78,23 +79,25 @@
 
 .team-names input:focus {
   outline: none;
-  border-color: #ff6b6b;
+  border-color: #e94560;
 }
 
 .start-button {
   padding: 1rem 3rem;
-  background: #ff6b6b;
+  background: linear-gradient(135deg, #e94560 0%, #0f3460 100%);
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 1.2rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
 }
 
 .start-button:hover {
-  background: #ff5252;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
 }
 
 .rules {
@@ -106,7 +109,7 @@
 
 .rules h3 {
   margin-top: 0;
-  color: #ff6b6b;
+  color: #e94560;
 }
 
 .rules ul {

@@ -11,7 +11,7 @@
 
 .game-header h1 {
   font-size: 2.5rem;
-  color: #ff6b6b;
+  color: #e94560;
   margin-bottom: 1rem;
 }
 
@@ -35,8 +35,8 @@
 }
 
 .score.active {
-  border-color: #ff6b6b;
-  box-shadow: 0 4px 8px rgba(255, 107, 107, 0.3);
+  border-color: #e94560;
+  box-shadow: 0 4px 8px rgba(233, 69, 96, 0.3);
   transform: scale(1.05);
 }
 
@@ -52,11 +52,11 @@
 
 .current-turn {
   text-align: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 1.5rem;
+  background: white;
+  color: #0f3460;
+  padding: 1rem 2rem;
   border-radius: 12px;
-  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .current-turn h2 {
@@ -79,7 +79,7 @@
 
 .timeline-container h3 {
   margin-top: 0;
-  color: #333;
+  color: #1a1a2e;
 }
 
 .result-section {
@@ -96,11 +96,11 @@
 }
 
 .result-message.correct {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  background: linear-gradient(135deg, #06d6a0 0%, #00c896 100%);
 }
 
 .result-message.incorrect {
-  background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+  background: linear-gradient(135deg, #e94560 0%, #d63447 100%);
 }
 
 .result-message h2 {
@@ -115,19 +115,21 @@
 
 .next-turn-button {
   padding: 1rem 2rem;
-  background: #667eea;
+  background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 1.2rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
   align-self: center;
+  box-shadow: 0 4px 15px rgba(15, 52, 96, 0.3);
 }
 
 .next-turn-button:hover {
-  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(15, 52, 96, 0.4);
 }
 
 .game-over {
@@ -178,13 +180,13 @@
 
 .winner-announcement h2 {
   font-size: 2rem;
-  color: #667eea;
+  color: #0f3460;
   margin: 0 0 1rem 0;
 }
 
 .winner-announcement h1 {
   font-size: 3rem;
-  color: #ff6b6b;
+  color: #e94560;
   margin: 0 0 1rem 0;
 }
 
@@ -205,19 +207,21 @@
 
 .play-again-button {
   padding: 1rem 3rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #e94560 0%, #0f3460 100%);
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 1.3rem;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
   margin-top: 2rem;
+  box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
 }
 
 .play-again-button:hover {
   transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
 }
 
 .loading-screen,
@@ -239,7 +243,7 @@
 
 .loading-content h2,
 .error-content h2 {
-  color: #667eea;
+  color: #0f3460;
   margin-bottom: 2rem;
 }
 
@@ -247,7 +251,7 @@
   width: 60px;
   height: 60px;
   border: 5px solid #f3f3f3;
-  border-top: 5px solid #667eea;
+  border-top: 5px solid #e94560;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto;
@@ -265,7 +269,7 @@
 
 .retry-button {
   padding: 1rem 2rem;
-  background: #ff6b6b;
+  background: #e94560;
   color: white;
   border: none;
   border-radius: 8px;
@@ -276,7 +280,7 @@
 }
 
 .retry-button:hover {
-  background: #ff5252;
+  background: #d63447;
 }
 
 

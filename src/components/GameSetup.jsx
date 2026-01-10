@@ -26,12 +26,12 @@ export default function GameSetup({ onStartGame }) {
 
   return (
     <div className="game-setup">
-      <h1>🎵 Hitster Game</h1>
+      <h1>Hitster Game</h1>
       <p className="subtitle">Guess the year and build your timeline!</p>
       
       <div className="setup-form">
         <div className="form-group">
-          <label>Number of Teams:</label>
+          <label>Number of teams:</label>
           <div className="team-selector">
             {[2, 3, 4, 5, 6].map(num => (
               <button
@@ -46,7 +46,7 @@ export default function GameSetup({ onStartGame }) {
         </div>
 
         <div className="form-group">
-          <label>Team Names:</label>
+          <label>Team names:</label>
           <div className="team-names">
             {teamNames.map((name, index) => (
               <input
@@ -61,7 +61,7 @@ export default function GameSetup({ onStartGame }) {
         </div>
 
         <div className="form-group">
-          <label>Songs to Win:</label>
+          <label>Songs to win:</label>
           <div className="team-selector">
             {[5, 10, 15, 20].map(num => (
               <button

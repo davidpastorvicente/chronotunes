@@ -7,32 +7,34 @@
 
 .song-player h3 {
   margin-top: 0;
-  color: #333;
+  color: #1a1a2e;
   text-align: center;
   font-size: 1.5rem;
 }
 
 .audio-container {
-  min-height: 200px;
+  width: 250px;
+  height: 260px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
   border-radius: 8px;
-  margin-bottom: 1rem;
+  margin: 1rem auto;
+  padding: 2rem;
 }
 
 .play-button-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .play-button {
-  padding: 1.5rem 3rem;
+  padding: 1rem 2rem;
   background: white;
-  color: #667eea;
+  color: #0f3460;
   border: none;
   border-radius: 50px;
   font-size: 1.5rem;
@@ -52,21 +54,15 @@
 
 .play-icon {
   font-size: 2rem;
+  color: #e94560;
 }
 
 .play-hint {
   color: white;
   margin: 0;
   font-size: 1rem;
-}
-
-.hidden-player {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
+  font-weight: 500;
+  text-align: center;
 }
 
 .now-playing {
@@ -84,18 +80,10 @@
   animation: pulse 2s ease-in-out infinite;
 }
 
-.now-playing p {
-  color: white;
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 0;
-  animation: pulse 2s ease-in-out infinite;
-}
-
 .control-button {
   padding: 0.75rem 2rem;
   background: white;
-  color: #667eea;
+  color: #0f3460;
   border: none;
   border-radius: 25px;
   font-size: 1.1rem;

@@ -115,7 +115,7 @@ export default function GameBoard({ teams, winningScore }) {
   return (
     <div className="game-board">
       <div className="game-header">
-        <h1>🎵 Hitster</h1>
+        <h1>Hitster</h1>
         <div className="scores">
           {teams.map((team, index) => (
             <div 
@@ -169,8 +169,10 @@ export default function GameBoard({ teams, winningScore }) {
 
       {gamePhase !== 'gameOver' && gamePhase !== 'loading' && gamePhase !== 'error' && (
         <>
-          <div className="current-turn">
-            <h2>Current Turn: {currentTeam}</h2>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
+            <div className="current-turn">
+              <h2>{currentTeam}</h2>
+            </div>
           </div>
 
       {currentSong && gamePhase === 'playing' && (
@@ -192,13 +194,13 @@ export default function GameBoard({ teams, winningScore }) {
           <div className={`result-message ${lastPlacement.correct ? 'correct' : 'incorrect'}`}>
             {lastPlacement.correct ? (
               <>
-                <h2>✅ Correct!</h2>
-                <p>{currentSong.title} ({currentSong.year}) has been added to your timeline!</p>
+                <h2>️☑️ Correct!</h2>
+                <p><b>{currentSong.title} ({currentSong.year})</b> has been added to your timeline!</p>
               </>
             ) : (
               <>
-                <h2>❌ Wrong!</h2>
-                <p>{currentSong.title} was released in <b>{currentSong.year}</b></p>
+                <h2>🅧 Wrong!</h2>
+                <p><b>{currentSong.title}</b> was released in <b>{currentSong.year}</b></p>
                 <p>Better luck next time!</p>
               </>
             )}

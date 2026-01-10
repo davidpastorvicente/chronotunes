@@ -49,7 +49,7 @@ export default function SongPlayer({ song }) {
 
   return (
     <div className="song-player">
-      <h3>🎵 Listen to the Song</h3>
+      <h3>🎶 Listen to the song 🎶</h3>
       {!isYouTube && <audio ref={audioRef} src={song.previewUrl} />}
       {isYouTube && isPlaying && (
         <iframe
@@ -72,19 +72,17 @@ export default function SongPlayer({ song }) {
             <p className="play-hint">Click to play the mystery song!</p>
           </div>
         ) : (
-          <div className="hidden-player">
-            <div className="now-playing">
-              <div className={`music-bars ${isPaused ? 'paused' : ''}`}>
-                <span></span>
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              <p>{isPaused ? '⏸️ Paused' : '🎵 Now Playing... 🎵'}</p>
-              <button className="control-button" onClick={togglePlayPause}>
-                {isPaused ? '▶ Play' : '⏸ Pause'}
-              </button>
+          <div className="now-playing">
+            <div className={`music-bars ${isPaused ? 'paused' : ''}`}>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
             </div>
+            <p>{isPaused ? 'Paused' : 'Playing...'}</p>
+            <button className="control-button" onClick={togglePlayPause}>
+              {isPaused ? '▶ Play' : '⏸ Pause'}
+            </button>
           </div>
         )}
       </div>
