@@ -9,18 +9,36 @@ export default function Timeline({ timeline, showYears }) {
     );
   }
 
+  // Group songs by year
+  const groupedByYear = [];
+  let currentGroup = [timeline[0]];
+  
+  for (let i = 1; i < timeline.length; i++) {
+    if (timeline[i].year === timeline[i - 1].year) {
+      currentGroup.push(timeline[i]);
+    } else {
+      groupedByYear.push(currentGroup);
+      currentGroup = [timeline[i]];
+    }
+  }
+  groupedByYear.push(currentGroup);
+
   return (
     <div className="timeline">
-      {timeline.map((song, index) => (
-        <div key={index} className="timeline-item">
-          <div className="song-card">
-            <div className="song-info">
-              <div className="song-title">{song.title}</div>
-              <div className="song-artist">{song.artist}</div>
-              {showYears && <div className="song-year">{song.year}</div>}
-            </div>
+      {groupedByYear.map((group, groupIndex) => (
+        <div key={groupIndex} className="timeline-year-group">
+          <div className="year-group-container">
+            {group.map((song, songIndex) => (
+              <div key={songIndex} className="song-card">
+                <div className="song-info">
+                  <div className="song-title">{song.title}</div>
+                  <div className="song-artist">{song.artist}</div>
+                  {showYears && <div className="song-year">{song.year}</div>}
+                </div>
+              </div>
+            ))}
           </div>
-          {index < timeline.length - 1 && (
+          {groupIndex < groupedByYear.length - 1 && (
             <div className="timeline-arrow">→</div>
           )}
         </div>

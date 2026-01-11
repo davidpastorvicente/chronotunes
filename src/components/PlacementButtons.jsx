@@ -23,11 +23,14 @@ export default function PlacementButtons({ timeline, onPlacement }) {
   });
 
   for (let i = 0; i < timeline.length - 1; i++) {
-    positions.push({
-      label: `Between ${timeline[i].year} - ${timeline[i + 1].year}`,
-      position: i + 1,
-      type: 'between'
-    });
+    // Only show "Between" button if years are different
+    if (timeline[i].year !== timeline[i + 1].year) {
+      positions.push({
+        label: `Between ${timeline[i].year} - ${timeline[i + 1].year}`,
+        position: i + 1,
+        type: 'between'
+      });
+    }
   }
 
   positions.push({

@@ -13,10 +13,17 @@
   font-style: italic;
 }
 
-.timeline-item {
+.timeline-year-group {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.year-group-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .song-card {
