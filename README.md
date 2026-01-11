@@ -65,7 +65,7 @@ npm run dev
 
 ### Adding New Songs
 
-To add songs, simply edit `src/data/songs.js` and add entries **without YouTube IDs**. You can place them anywhere in the file - no need to worry about IDs or ordering!
+To add songs, simply edit `src/data/songs.js` and add entries **without any IDs**. You can place them anywhere in the file!
 
 ```javascript
 {
@@ -75,13 +75,16 @@ To add songs, simply edit `src/data/songs.js` and add entries **without YouTube 
 }
 ```
 
-Then run the automatic Deezer and YouTube ID updater:
+Then run the automatic ID updater:
 
 ```bash
 python3 update-ids.py
 ```
 
-The script will automatically fetch the correct Deezer and YouTube ID and update the file.
+The script will automatically:
+- ✅ Fetch YouTube IDs from YouTube Music API
+- ✅ Fetch Deezer IDs from Deezer API (for ad-free playback)
+- ✅ Update the songs.js file with both IDs
 
 ### Manual ID Entry
 
@@ -92,8 +95,8 @@ You can also add songs with IDs directly:
   title: "Your Song Title",
   artist: "Artist Name",
   year: 2024,
-  youtubeId: "ID",
-  deezerId: "ID"
+  youtubeId: "youtube_video_id",
+  deezerId: "deezer_track_id"
 }
 ```
 
@@ -102,14 +105,14 @@ You can also add songs with IDs directly:
 ```
 src/
 ├── components/
-│   ├── GameSetup.jsx       # Team configuration
-│   ├── GameBoard.jsx       # Main game logic
-│   ├── Timeline.jsx        # Timeline display
-│   ├── SongPlayer.jsx      # Audio player
-│   └── PlacementButtons.jsx # Placement controls
+│   ├── GameSetup.jsx         # Team configuration
+│   ├── GameBoard.jsx         # Main game logic
+│   ├── Timeline.jsx          # Timeline display
+│   ├── SongPlayer.jsx        # Audio player
+│   └── PlacementButtons.jsx  # Placement controls
 ├── data/
-│   └── songs.js            # Curated song library
-└── App.jsx                 # Root component
+│   └── songs.js              # Curated song library
+└── App.jsx                   # Root component
 ```
 
 ## 🎯 No API Keys Required!
