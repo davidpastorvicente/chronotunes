@@ -3,13 +3,13 @@ export const translations = {
     // Game Setup
     setupTitle: "Hitster",
     setupSubtitle: "Build timelines by placing songs in chronological order!",
-    teamsLabel: "Number of Teams:",
-    winningScoreLabel: "Winning Score:",
-    teamNamePlaceholder: "Team Name",
-    startGameButton: "Start Game! 🎮",
+    teamsLabel: "Number of teams:",
+    winningScoreLabel: "Winning score:",
+    teamNamePlaceholder: "Team name",
+    startGameButton: "Start game",
     
     // Game Board
-    currentTurn: "Current Turn:",
+    currentTurn: "Current turn:",
     timeline: "Timeline",
     score: "Score",
     
@@ -22,7 +22,7 @@ export const translations = {
     
     // Placement Buttons
     placementInstruction: "Where does this song belong in your timeline?",
-    placeAsFirst: "Place as First Song",
+    placeAsFirst: "Place first song",
     before: "Before",
     between: "Between",
     after: "After",
@@ -33,26 +33,24 @@ export const translations = {
     // Results
     correct: "✓ Correct!",
     incorrect: "✗ Incorrect",
-    correctPlacement: "Great job! The song has been added to your timeline.",
-    incorrectPlacement: "Wrong placement! The song was not added.",
     song: "The song",
     actualYear: "is from",
-    nextTurn: "Next Turn",
+    nextTurn: "Next turn",
     
     // Game Over
-    gameOver: "🎉 Game Over! 🎉",
+    gameOver: "🎉 Game over! 🎉",
     winner: "Winner:",
-    finalTimeline: "Final Timeline:",
-    playAgain: "Play Again"
+    finalTimeline: "Final timeline:",
+    playAgain: "Play again"
   },
   es: {
     // Game Setup
     setupTitle: "Hitster",
-    setupSubtitle: "¡Construye líneas de tiempo colocando canciones en orden cronológico!",
-    teamsLabel: "Número de Equipos:",
-    winningScoreLabel: "Puntuación para Ganar:",
-    teamNamePlaceholder: "Nombre del Equipo",
-    startGameButton: "¡Empezar Juego! 🎮",
+    setupSubtitle: "¡Construye timelines colocando canciones en orden cronológico!",
+    teamsLabel: "Número de equipos:",
+    winningScoreLabel: "Puntuación para ganar:",
+    teamNamePlaceholder: "Nombre del equipo",
+    startGameButton: "Empezar",
     
     // Game Board
     currentTurn: "Turno actual:",
@@ -67,28 +65,26 @@ export const translations = {
     pause: "Pausar",
     
     // Placement Buttons
-    placementInstruction: "¿Dónde pertenece esta canción en tu línea de tiempo?",
-    placeAsFirst: "Colocar como Primera Canción",
+    placementInstruction: "¿Dónde pertenece esta canción en tu timeline?",
+    placeAsFirst: "Colocar primera",
     before: "Antes de",
     between: "Entre",
     after: "Después de",
     
     // Timeline
-    noSongs: "Aún no hay canciones. ¡Empieza a construir tu línea de tiempo!",
+    noSongs: "Aún no hay canciones. ¡Empieza a construir tu timeline!",
     
     // Results
     correct: "✓ ¡Correcto!",
     incorrect: "✗ Incorrecto",
-    correctPlacement: "¡Bien hecho! La canción se ha añadido a tu línea de tiempo.",
-    incorrectPlacement: "¡Colocación incorrecta! La canción no se añadió.",
     song: "La canción",
     actualYear: "es del año",
-    nextTurn: "Siguiente Turno",
+    nextTurn: "Siguiente turno",
     
     // Game Over
-    gameOver: "🎉 ¡Fin del Juego! 🎉",
+    gameOver: "🎉 ¡Fin del juego! 🎉",
     winner: "Ganador:",
-    finalTimeline: "Línea de Tiempo Final:",
-    playAgain: "Jugar de Nuevo"
+    finalTimeline: "Timeline final:",
+    playAgain: "Jugar de nuevo"
   }
 };

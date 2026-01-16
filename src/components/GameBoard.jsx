@@ -6,15 +6,18 @@ import SongPlayer from './SongPlayer';
 import PlacementButtons from './PlacementButtons';
 import './GameBoard.css';
 
-// Function to fetch Deezer preview URL dynamically
-async function fetchDeezerPreview(deezerId) {
+// Function to fetch Deezer preview URL and album cover dynamically
+async function fetchDeezerData(deezerId) {
   try {
     const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(`https://api.deezer.com/track/${deezerId}`)}`);
     const data = await response.json();
-    return data.preview || null;
+    return {
+      previewUrl: data.preview || null,
+      albumCover: data.album?.cover_medium || null
+    };
   } catch (error) {
-    console.error('Error fetching Deezer preview:', error);
-    return null;
+    console.error('Error fetching Deezer data:', error);
+    return { previewUrl: null, albumCover: null };
   }
 }
 
@@ -45,10 +48,13 @@ export default function GameBoard({ teams, winningScore, language }) {
     const randomIndex = Math.floor(Math.random() * availableToPlay.length);
     const song = availableToPlay[randomIndex];
 
-    // Fetch Deezer preview dynamically if deezerId exists
+    // Fetch Deezer data dynamically if deezerId exists
     let previewUrl;
+    let albumCover;
     if (song.deezerId) {
-      previewUrl = await fetchDeezerPreview(song.deezerId);
+      const deezerData = await fetchDeezerData(song.deezerId);
+      previewUrl = deezerData.previewUrl;
+      albumCover = deezerData.albumCover;
     }
     
     // Fallback to YouTube if no Deezer preview available
@@ -56,7 +62,7 @@ export default function GameBoard({ teams, winningScore, language }) {
       previewUrl = `https://www.youtube.com/embed/${song.youtubeId}?autoplay=1&controls=0`;
     }
 
-    setCurrentSong({ ...song, previewUrl });
+    setCurrentSong({ ...song, previewUrl, albumCover });
     setUsedSongIds([...usedIds, song.youtubeId]);
     setGamePhase('playing');
     setLastPlacement(null);
@@ -119,9 +125,7 @@ export default function GameBoard({ teams, winningScore, language }) {
     await drawNewSong(availableSongs, usedSongIds);
   };
 
-  const currentTeam = teams[currentTeamIndex];
   const currentTimeline = teamTimelines[currentTeamIndex];
-
   return (
     <div className="game-board">
       <div className="game-header">
@@ -164,17 +168,18 @@ export default function GameBoard({ teams, winningScore, language }) {
               {gamePhase === 'result' && lastPlacement && (
                 <>
                   <div className={`result-message ${lastPlacement.correct ? 'correct' : 'incorrect'}`}>
-                    {lastPlacement.correct ? (
-                      <>
-                        <h2>{t.correct}</h2>
-                        <p>{t.correctPlacement}</p>
-                      </>
-                    ) : (
-                      <>
-                        <h2>{t.incorrect}</h2>
-                        <p>{t.song} <b>{currentSong.title} ({currentSong.artist})</b> {t.actualYear} <b>{currentSong.year}</b></p>
-                      </>
+                    {currentSong.albumCover && (
+                      <div className="result-album-cover">
+                        <img src={currentSong.albumCover} alt="Album cover" />
+                      </div>
                     )}
+                    <div className="result-content">
+                      <div className="song-details">
+                        <div className="song-detail-title">{currentSong.title}</div>
+                        <div className="song-detail-artist">{currentSong.artist}</div>
+                        <div className="song-detail-year">{currentSong.year}</div>
+                      </div>
+                    </div>
                   </div>
                   <button className="next-turn-button" onClick={handleNextTurn}>
                     {t.nextTurn}

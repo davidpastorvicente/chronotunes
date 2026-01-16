@@ -10,6 +10,12 @@
   }
 }
 
+@media (max-width: 1023px) {
+  .game-header h1 {
+    margin-top: 3rem;
+  }
+}
+
 .game-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -72,6 +78,7 @@
 }
 
 .team-timeline-container {
+  min-height: 250px;
   margin-bottom: 2rem;
   padding: 1rem;
   border-radius: 8px;
@@ -132,10 +139,13 @@
 }
 
 .result-message {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 2rem;
   border-radius: 12px;
   color: white;
+  text-align: center;
 }
 
 .result-message.correct {
@@ -146,6 +156,42 @@
   background: linear-gradient(135deg, #e94560 0%, #d63447 100%);
 }
 
+.result-album-cover img {
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.result-content {
+  width: 100%;
+}
+
+/* Responsive layout: image left on small/medium, image top on large */
+@media (max-width: 1023px) {
+  .result-message {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+  }
+
+  .result-album-cover {
+    margin-right: 1.5rem;
+  }
+
+  .result-content {
+    width: calc(100% - 160px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .result-message {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+}
+
 .result-message h2 {
   margin: 0 0 1rem 0;
   font-size: 2rem;
@@ -154,6 +200,30 @@
 .result-message p {
   margin: 0.5rem 0;
   font-size: 1.1rem;
+}
+
+.song-details {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.song-detail-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.song-detail-artist {
+  font-size: 1.2rem;
+  opacity: 0.9;
+  margin-bottom: 0.5rem;
+}
+
+.song-detail-year {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
 }
 
 .next-turn-button {
