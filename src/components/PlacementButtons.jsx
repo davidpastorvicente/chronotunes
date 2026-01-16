@@ -1,6 +1,9 @@
+import { translations } from '../translations';
 import './PlacementButtons.css';
 
-export default function PlacementButtons({ timeline, onPlacement }) {
+export default function PlacementButtons({ timeline, onPlacement, language }) {
+  const t = translations[language];
+
   if (timeline.length === 0) {
     return (
       <div className="placement-buttons">
@@ -8,7 +11,7 @@ export default function PlacementButtons({ timeline, onPlacement }) {
           className="placement-button first"
           onClick={() => onPlacement(0)}
         >
-          Place as First Song
+          {t.placeAsFirst}
         </button>
       </div>
     );
@@ -17,7 +20,7 @@ export default function PlacementButtons({ timeline, onPlacement }) {
   const positions = [];
   
   positions.push({
-    label: `Before ${timeline[0].year}`,
+    label: `${t.before} ${timeline[0].year}`,
     position: 0,
     type: 'before'
   });
@@ -26,7 +29,7 @@ export default function PlacementButtons({ timeline, onPlacement }) {
     // Only show "Between" button if years are different
     if (timeline[i].year !== timeline[i + 1].year) {
       positions.push({
-        label: `Between ${timeline[i].year} - ${timeline[i + 1].year}`,
+        label: `${t.between} ${timeline[i].year} - ${timeline[i + 1].year}`,
         position: i + 1,
         type: 'between'
       });
@@ -34,14 +37,14 @@ export default function PlacementButtons({ timeline, onPlacement }) {
   }
 
   positions.push({
-    label: `After ${timeline[timeline.length - 1].year}`,
+    label: `${t.after} ${timeline[timeline.length - 1].year}`,
     position: timeline.length,
     type: 'after'
   });
 
   return (
     <div className="placement-buttons">
-      <p className="placement-instruction">Where does this song belong in your timeline?</p>
+      <p className="placement-instruction">{t.placementInstruction}</p>
       <div className="button-grid">
         {positions.map((pos, index) => (
           <button

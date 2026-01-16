@@ -1,10 +1,13 @@
+import { translations } from '../translations';
 import './Timeline.css';
 
-export default function Timeline({ timeline, showYears }) {
+export default function Timeline({ timeline, showYears, language }) {
+  const t = translations[language];
+
   if (timeline.length === 0) {
     return (
       <div className="timeline empty">
-        <p>No songs yet. Start building your timeline!</p>
+        <p>{t.noSongs}</p>
       </div>
     );
   }

@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
+import { translations } from '../translations';
 import './SongPlayer.css';
 
-export default function SongPlayer({ song }) {
+export default function SongPlayer({ song, language }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const audioRef = useRef(null);
   const iframeRef = useRef(null);
   
+  const t = translations[language];
   const isYouTube = song.previewUrl && song.previewUrl.includes('youtube');
 
   useEffect(() => {
@@ -49,7 +51,7 @@ export default function SongPlayer({ song }) {
 
   return (
     <div className="song-player">
-      <h3>🎶 Listen to the song 🎶</h3>
+      <h3>{t.listenSong}</h3>
       {!isYouTube && <audio ref={audioRef} src={song.previewUrl} />}
       {isYouTube && isPlaying && (
         <iframe
@@ -67,9 +69,9 @@ export default function SongPlayer({ song }) {
           <div className="play-button-container">
             <button className="play-button" onClick={handlePlayClick}>
               <span className="play-icon">▶</span>
-              <span>Play Song</span>
+              <span>{t.playSong}</span>
             </button>
-            <p className="play-hint">Click to play the mystery song!</p>
+            <p className="play-hint">{t.playHint}</p>
           </div>
         ) : (
           <div className="now-playing">
@@ -79,15 +81,15 @@ export default function SongPlayer({ song }) {
               <span></span>
               <span></span>
             </div>
-            <p>{isPaused ? 'Paused' : 'Playing...'}</p>
+            <p>{isPaused ? t.paused : t.playing}</p>
             <button className="control-button" onClick={togglePlayPause}>
-              {isPaused ? '▶ Play' : '⏸ Pause'}
+              {isPaused ? `▶ ${t.play}` : `⏸ ${t.pause}`}
             </button>
           </div>
         )}
       </div>
       <div className="song-hint">
-        <p>Guess when this song was released and place it in your timeline!</p>
+        <p>{t.songHint}</p>
       </div>
     </div>
   );

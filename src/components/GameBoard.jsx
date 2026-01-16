@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { songs } from '../data/songs';
+import { translations } from '../translations';
 import Timeline from './Timeline';
 import SongPlayer from './SongPlayer';
 import PlacementButtons from './PlacementButtons';
@@ -17,7 +18,7 @@ async function fetchDeezerPreview(deezerId) {
   }
 }
 
-export default function GameBoard({ teams, winningScore }) {
+export default function GameBoard({ teams, winningScore, language }) {
   const [currentTeamIndex, setCurrentTeamIndex] = useState(0);
   const [currentSong, setCurrentSong] = useState(null);
   const [teamTimelines, setTeamTimelines] = useState(
@@ -29,6 +30,8 @@ export default function GameBoard({ teams, winningScore }) {
   const [lastPlacement, setLastPlacement] = useState(null);
   const [scores, setScores] = useState(teams.map(() => 0));
   const [winner, setWinner] = useState(null);
+
+  const t = translations[language];
 
   const drawNewSong = useCallback(async (songs, usedIds) => {
     const availableToPlay = songs.filter(song => !usedIds.includes(song.youtubeId));
@@ -137,15 +140,15 @@ export default function GameBoard({ teams, winningScore }) {
       {gamePhase === 'gameOver' && winner !== null && (
         <div className="game-over">
           <div className="winner-announcement">
-            <h2>🎉 Game Over! 🎉</h2>
-            <h1>{teams[winner]} Wins!</h1>
+            <h2>{t.gameOver}</h2>
+            <h1>{teams[winner]} {t.winner}</h1>
             <p>They reached {winningScore} songs in their timeline!</p>
             <div className="final-timeline">
-              <h3>Winning Timeline:</h3>
-              <Timeline timeline={teamTimelines[winner]} showYears={true} />
+              <h3>{t.finalTimeline}</h3>
+              <Timeline timeline={teamTimelines[winner]} showYears={true} language={language} />
             </div>
             <button className="play-again-button" onClick={() => window.location.reload()}>
-              Play Again
+              {t.playAgain}
             </button>
           </div>
         </div>
@@ -161,13 +164,14 @@ export default function GameBoard({ teams, winningScore }) {
 
       {currentSong && gamePhase === 'playing' && (
         <div className="song-section">
-          <SongPlayer song={currentSong} />
+          <SongPlayer song={currentSong} language={language} />
           <div className="timeline-container">
-            <h3>Your Timeline:</h3>
-            <Timeline timeline={currentTimeline} showYears={true} />
+            <h3>{t.timeline}:</h3>
+            <Timeline timeline={currentTimeline} showYears={true} language={language} />
             <PlacementButtons 
               timeline={currentTimeline}
               onPlacement={handlePlacement}
+              language={language}
             />
           </div>
         </div>
@@ -178,25 +182,24 @@ export default function GameBoard({ teams, winningScore }) {
           <div className={`result-message ${lastPlacement.correct ? 'correct' : 'incorrect'}`}>
             {lastPlacement.correct ? (
               <>
-                <h2>️☑️ Correct!</h2>
-                <p><b>{currentSong.title} ({currentSong.year})</b> has been added to your timeline!</p>
+                <h2>{t.correct}</h2>
+                <p>{t.correctPlacement}</p>
               </>
             ) : (
               <>
-                <h2>🅧 Wrong!</h2>
-                <p><b>{currentSong.title}</b> was released in <b>{currentSong.year}</b></p>
-                <p>Better luck next time!</p>
+                <h2>{t.incorrect}</h2>
+                <p><b>{currentSong.title}</b> {t.actualYear} <b>{currentSong.year}</b></p>
               </>
             )}
           </div>
           
           <div className="timeline-container">
-            <h3>{currentTeam}'s Timeline:</h3>
-            <Timeline timeline={teamTimelines[currentTeamIndex]} showYears={true} />
+            <h3>{currentTeam} {t.timeline}:</h3>
+            <Timeline timeline={teamTimelines[currentTeamIndex]} showYears={true} language={language} />
           </div>
 
           <button className="next-turn-button" onClick={handleNextTurn}>
-            Next Turn
+            {t.nextTurn}
           </button>
         </div>
       )}

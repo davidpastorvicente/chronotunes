@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { translations } from '../translations';
 import './GameSetup.css';
 
-export default function GameSetup({ onStartGame }) {
+export default function GameSetup({ onStartGame, language }) {
   const [numTeams, setNumTeams] = useState(2);
   const [teamNames, setTeamNames] = useState(['Team 1', 'Team 2']);
   const [winningScore, setWinningScore] = useState(10);
+
+  const t = translations[language];
 
   const handleNumTeamsChange = (num) => {
     setNumTeams(num);
@@ -26,12 +29,12 @@ export default function GameSetup({ onStartGame }) {
 
   return (
     <div className="game-setup">
-      <h1>Hitster Game</h1>
-      <p className="subtitle">Guess the year and build your timeline!</p>
+      <h1>{t.setupTitle}</h1>
+      <p className="subtitle">{t.setupSubtitle}</p>
       
       <div className="setup-form">
         <div className="form-group">
-          <label>Number of teams:</label>
+          <label>{t.teamsLabel}</label>
           <div className="team-selector">
             {[2, 3, 4, 5, 6].map(num => (
               <button
@@ -46,7 +49,7 @@ export default function GameSetup({ onStartGame }) {
         </div>
 
         <div className="form-group">
-          <label>Team names:</label>
+          <label>{t.teamsLabel}</label>
           <div className="team-names">
             {teamNames.map((name, index) => (
               <input
@@ -54,14 +57,14 @@ export default function GameSetup({ onStartGame }) {
                 type="text"
                 value={name}
                 onChange={(e) => handleTeamNameChange(index, e.target.value)}
-                placeholder={`Team ${index + 1}`}
+                placeholder={t.teamNamePlaceholder}
               />
             ))}
           </div>
         </div>
 
         <div className="form-group">
-          <label>Songs to win:</label>
+          <label>{t.winningScoreLabel}</label>
           <div className="team-selector">
             {[5, 10, 15, 20].map(num => (
               <button
@@ -76,18 +79,8 @@ export default function GameSetup({ onStartGame }) {
         </div>
 
         <button className="start-button" onClick={handleStart}>
-          Start Game
+          {t.startGameButton}
         </button>
-      </div>
-
-      <div className="rules">
-        <h3>How to Play:</h3>
-        <ul>
-          <li>Listen to a song and guess when it was released</li>
-          <li>Place it in your timeline (before, between, or after existing songs)</li>
-          <li>If you're correct, the song stays in your timeline</li>
-          <li>First team to reach the target number of songs wins!</li>
-        </ul>
       </div>
     </div>
   );
