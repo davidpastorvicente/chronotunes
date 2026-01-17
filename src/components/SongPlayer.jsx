@@ -66,12 +66,15 @@ export default function SongPlayer({ song, language }) {
       {!isPlaying ? (
         <div className="play-button-container">
           <button className="play-button" onClick={handlePlayClick}>
-            <span className="play-icon">▶</span>
+            <span className="play-icon">▶️</span>
             <span>{t.playSong}</span>
           </button>
         </div>
       ) : (
         <div className="now-playing">
+          <button className="control-button" onClick={togglePlayPause}>
+            {isPaused ? `▶️ ${t.play}` : `⏸️ ${t.pause}`}
+          </button>
           <div className={`music-bars ${isPaused ? 'paused' : ''}`}>
             <span></span>
             <span></span>
@@ -79,9 +82,6 @@ export default function SongPlayer({ song, language }) {
             <span></span>
           </div>
           <p>{isPaused ? t.paused : t.playing}</p>
-          <button className="control-button" onClick={togglePlayPause}>
-            {isPaused ? `▶ ${t.play}` : `⏸ ${t.pause}`}
-          </button>
         </div>
       )}
     </div>
