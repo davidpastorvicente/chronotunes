@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { translations } from '../translations';
+import { songSetOptions } from '../data/songs';
 import './GameSetup.css';
 
 export default function GameSetup({ onStartGame, language }) {
   const [numTeams, setNumTeams] = useState(2);
   const [teamNames, setTeamNames] = useState(['Team 1', 'Team 2']);
   const [winningScore, setWinningScore] = useState(10);
+  const [songSet, setSongSet] = useState('everything');
 
   const t = translations[language];
 
@@ -24,7 +26,7 @@ export default function GameSetup({ onStartGame, language }) {
   };
 
   const handleStart = () => {
-    onStartGame(teamNames, winningScore);
+    onStartGame(teamNames, winningScore, songSet);
   };
 
   return (
@@ -73,6 +75,21 @@ export default function GameSetup({ onStartGame, language }) {
                 onClick={() => setWinningScore(num)}
               >
                 {num}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label>{t.songSetLabel || 'Song Set:'}</label>
+          <div className="team-selector">
+            {songSetOptions.map(option => (
+              <button
+                key={option.id}
+                className={songSet === option.id ? 'active' : ''}
+                onClick={() => setSongSet(option.id)}
+              >
+                {option.label}
               </button>
             ))}
           </div>

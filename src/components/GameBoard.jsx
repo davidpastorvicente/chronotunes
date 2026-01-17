@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { songs } from '../data/songs';
+import { songSets } from '../data/songs';
 import { translations } from '../translations';
 import Timeline from './Timeline';
 import SongPlayer from './SongPlayer';
@@ -21,7 +21,7 @@ async function fetchDeezerData(deezerId) {
   }
 }
 
-export default function GameBoard({ teams, winningScore, language }) {
+export default function GameBoard({ teams, winningScore, language, songSet }) {
   const [currentTeamIndex, setCurrentTeamIndex] = useState(0);
   const [currentSong, setCurrentSong] = useState(null);
   const [teamTimelines, setTeamTimelines] = useState(
@@ -69,9 +69,10 @@ export default function GameBoard({ teams, winningScore, language }) {
   }, []);
 
   const loadSongs = useCallback(async () => {
-    setAvailableSongs(songs);
-    await drawNewSong(songs, []);
-  }, [drawNewSong]);
+    const selectedSongs = songSets[songSet]?.songs || songSets.everything.songs;
+    setAvailableSongs(selectedSongs);
+    await drawNewSong(selectedSongs, []);
+  }, [drawNewSong, songSet]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

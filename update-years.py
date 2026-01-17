@@ -70,7 +70,10 @@ def update_year_in_file(filepath, title, artist, old_year, new_year):
         f.write(new_content)
 
 def main():
-    filepath = 'src/data/songs.js'
+    filepaths = [
+        'src/data/english.js',
+        'src/data/spanish.js'
+    ]
     
     print("=" * 70)
     print("Year Validator & Updater for Hitster Game")
@@ -78,121 +81,126 @@ def main():
     print("=" * 70)
     print()
     
-    # Extract songs from file
-    print("📖 Reading songs.js file...")
-    songs, content = extract_songs_from_file(filepath)
-    print(f"✓ Found {len(songs)} songs in file\n")
-    
-    # Filter songs with Deezer IDs
-    songs_with_deezer = [s for s in songs if s['deezerId']]
-    
-    if not songs_with_deezer:
-        print("⚠️  No songs with Deezer IDs found!")
-        return
-    
-    print(f"🔍 Found {len(songs_with_deezer)} songs with Deezer IDs")
-    print(f"⏭️  Skipping {len(songs) - len(songs_with_deezer)} songs without Deezer IDs")
-    print(f"📏 Only flagging differences of ±2 years or less\n")
-    
-    print("🎧 Validating years against Deezer API...\n")
-    
-    updates = []
-    errors = []
-    correct = []
-    large_diff = []
-    
-    for i, song in enumerate(songs_with_deezer, 1):
-        print(f"[{i}/{len(songs_with_deezer)}] {song['title']} - {song['artist']}")
-        print(f"  Current year: {song['year']}", end="")
+    for filepath in filepaths:
+        print(f"\n{'='*70}")
+        print(f"Processing: {filepath}")
+        print('='*70)
         
-        deezer_year, release_date = fetch_deezer_year(song['deezerId'])
+        # Extract songs from file
+        print("📖 Reading file...")
+        songs, content = extract_songs_from_file(filepath)
+        print(f"✓ Found {len(songs)} songs in file\n")
         
-        if deezer_year is None:
-            errors.append(song)
-            print(f" → ✗ Failed to fetch from Deezer")
-        elif deezer_year != song['year']:
-            year_diff = abs(deezer_year - song['year'])
-            if year_diff <= 2:
-                updates.append({
-                    'song': song,
-                    'old_year': song['year'],
-                    'new_year': deezer_year,
-                    'release_date': release_date,
-                    'diff': year_diff
-                })
-                print(f" → ⚠️  MISMATCH! Deezer says {deezer_year} (release: {release_date}) [±{year_diff}y]")
+        # Filter songs with Deezer IDs
+        songs_with_deezer = [s for s in songs if s['deezerId']]
+        
+        if not songs_with_deezer:
+            print("⚠️  No songs with Deezer IDs found!")
+            continue
+        
+        print(f"🔍 Found {len(songs_with_deezer)} songs with Deezer IDs")
+        print(f"⏭️  Skipping {len(songs) - len(songs_with_deezer)} songs without Deezer IDs")
+        print(f"📏 Only flagging differences of ±2 years or less\n")
+        
+        print("🎧 Validating years against Deezer API...\n")
+        
+        updates = []
+        errors = []
+        correct = []
+        large_diff = []
+        
+        for i, song in enumerate(songs_with_deezer, 1):
+            print(f"[{i}/{len(songs_with_deezer)}] {song['title']} - {song['artist']}")
+            print(f"  Current year: {song['year']}", end="")
+            
+            deezer_year, release_date = fetch_deezer_year(song['deezerId'])
+            
+            if deezer_year is None:
+                errors.append(song)
+                print(f" → ✗ Failed to fetch from Deezer")
+            elif deezer_year != song['year']:
+                year_diff = abs(deezer_year - song['year'])
+                if year_diff <= 2:
+                    updates.append({
+                        'song': song,
+                        'old_year': song['year'],
+                        'new_year': deezer_year,
+                        'release_date': release_date,
+                        'diff': year_diff
+                    })
+                    print(f" → ⚠️  MISMATCH! Deezer says {deezer_year} (release: {release_date}) [±{year_diff}y]")
+                else:
+                    large_diff.append({
+                        'song': song,
+                        'old_year': song['year'],
+                        'new_year': deezer_year,
+                        'release_date': release_date,
+                        'diff': year_diff
+                    })
+                    print(f" → ℹ️  Large diff: Deezer says {deezer_year} (release: {release_date}) [±{year_diff}y - SKIPPED]")
             else:
-                large_diff.append({
-                    'song': song,
-                    'old_year': song['year'],
-                    'new_year': deezer_year,
-                    'release_date': release_date,
-                    'diff': year_diff
-                })
-                print(f" → ℹ️  Large diff: Deezer says {deezer_year} (release: {release_date}) [±{year_diff}y - SKIPPED]")
-        else:
-            correct.append(song)
-            print(f" → ✓ Correct")
-        
-        # Small delay to avoid rate limiting
-        if i < len(songs_with_deezer):
-            time.sleep(0.2)
-    
-    print()
-    print("=" * 70)
-    print("SUMMARY:")
-    print(f"  ✓ Correct years: {len(correct)}")
-    print(f"  ⚠️  Years to update (±2y): {len(updates)}")
-    print(f"  ℹ️  Large differences (>2y, skipped): {len(large_diff)}")
-    print(f"  ✗ Errors: {len(errors)}")
-    print("=" * 70)
-    print()
-    
-    # Show all mismatches within ±2 years
-    if updates:
-        print("⚠️  YEAR MISMATCHES FOUND (±2 years):\n")
-        for update in updates:
-            song = update['song']
-            print(f"  • {song['title']} by {song['artist']}")
-            print(f"    Current: {update['old_year']} → Deezer: {update['new_year']} (released {update['release_date']}) [±{update['diff']}y]")
+                correct.append(song)
+                print(f" → ✓ Correct")
+            
+            # Small delay to avoid rate limiting
+            if i < len(songs_with_deezer):
+                time.sleep(0.2)
         
         print()
-        response = input("❓ Update all mismatched years in songs.js? (y/n): ").strip().lower()
+        print("=" * 70)
+        print("SUMMARY:")
+        print(f"  ✓ Correct years: {len(correct)}")
+        print(f"  ⚠️  Years to update (±2y): {len(updates)}")
+        print(f"  ℹ️  Large differences (>2y, skipped): {len(large_diff)}")
+        print(f"  ✗ Errors: {len(errors)}")
+        print("=" * 70)
+        print()
         
-        if response == 'y':
-            print("\n💾 Updating songs.js file...")
+        # Show all mismatches within ±2 years
+        if updates:
+            print("⚠️  YEAR MISMATCHES FOUND (±2 years):\n")
             for update in updates:
                 song = update['song']
-                update_year_in_file(
-                    filepath, 
-                    song['title'], 
-                    song['artist'], 
-                    update['old_year'], 
-                    update['new_year']
-                )
-            print(f"✓ Updated {len(updates)} song years in {filepath}")
-            print("\n📋 Changes made:")
-            for update in updates:
-                song = update['song']
-                print(f"  • {song['title']}: {update['old_year']} → {update['new_year']}")
+                print(f"  • {song['title']} by {song['artist']}")
+                print(f"    Current: {update['old_year']} → Deezer: {update['new_year']} (released {update['release_date']}) [±{update['diff']}y]")
+            
+            print()
+            response = input(f"❓ Update all mismatched years in {filepath}? (y/n): ").strip().lower()
+            
+            if response == 'y':
+                print(f"\n💾 Updating {filepath}...")
+                for update in updates:
+                    song = update['song']
+                    update_year_in_file(
+                        filepath, 
+                        song['title'], 
+                        song['artist'], 
+                        update['old_year'], 
+                        update['new_year']
+                    )
+                print(f"✓ Updated {len(updates)} song years in {filepath}")
+                print("\n📋 Changes made:")
+                for update in updates:
+                    song = update['song']
+                    print(f"  • {song['title']}: {update['old_year']} → {update['new_year']}")
+            else:
+                print("\n⏭️  Skipped updates. No changes made.")
         else:
-            print("\n⏭️  Skipped updates. No changes made.")
-    else:
-        print("✅ All song years match Deezer data (within ±2 years)!")
-    
-    # Show large differences that were skipped
-    if large_diff:
-        print(f"\nℹ️  Large year differences found (>2 years, NOT updated):")
-        for item in large_diff:
-            song = item['song']
-            print(f"  - {song['title']} by {song['artist']}")
-            print(f"    Current: {item['old_year']} vs Deezer: {item['new_year']} (±{item['diff']} years)")
-    
-    # Show errors
-    if errors:
-        print("\n⚠️  Failed to validate these songs:")
-        for song in errors:
-            print(f"  - {song['title']} by {song['artist']} (Deezer ID: {song['deezerId']})")
+            print("✅ All song years match Deezer data (within ±2 years)!")
+        
+        # Show large differences that were skipped
+        if large_diff:
+            print(f"\nℹ️  Large year differences found (>2 years, NOT updated):")
+            for item in large_diff:
+                song = item['song']
+                print(f"  - {song['title']} by {song['artist']}")
+                print(f"    Current: {item['old_year']} vs Deezer: {item['new_year']} (±{item['diff']} years)")
+        
+        # Show errors
+        if errors:
+            print("\n⚠️  Failed to validate these songs:")
+            for song in errors:
+                print(f"  - {song['title']} by {song['artist']} (Deezer ID: {song['deezerId']})")
     
     print("\n✅ Done!")
 

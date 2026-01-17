@@ -5,6 +5,7 @@ export const translations = {
     setupSubtitle: "Build timelines by placing songs in chronological order!",
     teamsLabel: "Number of teams:",
     winningScoreLabel: "Winning score:",
+    songSetLabel: "Song set:",
     teamNamePlaceholder: "Team name",
     startGameButton: "Start game",
     
@@ -49,6 +50,7 @@ export const translations = {
     setupSubtitle: "¡Construye timelines colocando canciones en orden cronológico!",
     teamsLabel: "Número de equipos:",
     winningScoreLabel: "Puntuación para ganar:",
+    songSetLabel: "Tipo de canciones:",
     teamNamePlaceholder: "Nombre del equipo",
     startGameButton: "Empezar",
     

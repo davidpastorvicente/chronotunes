@@ -9,10 +9,12 @@ function App() {
   const [teams, setTeams] = useState([])
   const [winningScore, setWinningScore] = useState(10)
   const [language, setLanguage] = useState('es')
+  const [songSet, setSongSet] = useState('everything')
 
-  const handleStartGame = (teamNames, targetScore) => {
+  const handleStartGame = (teamNames, targetScore, selectedSongSet) => {
     setTeams(teamNames)
     setWinningScore(targetScore)
+    setSongSet(selectedSongSet)
     setGameStarted(true)
   }
 
@@ -22,7 +24,7 @@ function App() {
       {!gameStarted ? (
         <GameSetup onStartGame={handleStartGame} language={language} />
       ) : (
-        <GameBoard teams={teams} winningScore={winningScore} language={language} />
+        <GameBoard teams={teams} winningScore={winningScore} language={language} songSet={songSet} />
       )}
     </div>
   )
