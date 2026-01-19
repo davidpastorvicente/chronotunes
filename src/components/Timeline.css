@@ -27,7 +27,6 @@
 }
 
 .song-card {
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-dark) 100%);
   color: white;
   padding: 1rem;
   border-radius: 8px;
