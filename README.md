@@ -2,6 +2,8 @@
 
 A music guessing game where teams build timelines by placing songs in chronological order.
 
+![Hitster Logo](screenshot.png)
+
 ## 🎮 How to Play
 
 1. **Setup Teams**: Choose 2-6 teams and set a winning score (5, 10, 15, or 20 songs)
