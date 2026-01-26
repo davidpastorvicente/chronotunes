@@ -37,7 +37,7 @@ export default function GameSetup({ onStartGame, language }) {
         <div className="form-group">
           <label>{t.teamsNumber}</label>
           <div className="team-selector">
-            {[2, 3, 4, 5, 6].map(num => (
+            {[1, 2, 3, 4, 5, 6].map(num => (
               <button
                 key={num}
                 className={numTeams === num ? 'active' : ''}
