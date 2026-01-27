@@ -31,18 +31,10 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       
-      - name: Generate Random Password
-        id: password
-        run: |
-          PASSWORD=$(openssl rand -base64 12 | tr -d '/+=' | cut -c1-16)
-          echo "VITE_APP_PASSWORD=$PASSWORD" >> $GITHUB_ENV
-          echo "::notice title=🔐 App Password::$PASSWORD"
-          echo "password=$PASSWORD" >> $GITHUB_OUTPUT
-      
       - name: Build
         run: npm run build
         env:
-          VITE_APP_PASSWORD: ${{ env.VITE_APP_PASSWORD }}
+          VITE_APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
       
       - name: Setup Pages
         uses: actions/configure-pages@v4
