@@ -1,11 +1,12 @@
 .song-player {
   background: var(--bg-primary);
   padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px var(--shadow);
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 16px;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 4px 6px var(--shadow);
 }
 
 .play-button-container {

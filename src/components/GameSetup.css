@@ -27,7 +27,8 @@
   margin: auto;
   background: var(--bg-primary);
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: 16px;
+  border: 2px solid var(--border-color);
   box-shadow: 0 4px 6px var(--shadow);
   max-width: 500px;
 }

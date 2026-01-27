@@ -1,5 +1,12 @@
 export const translations = {
   en: {
+    // Auth
+    authTitle: "Hitster",
+    authSubtitle: "Please enter the password to continue",
+    authPasswordPlaceholder: "Password",
+    authEnterButton: "Enter",
+    authIncorrectPassword: "Incorrect password",
+    
     // Game Setup
     setupTitle: "Hitster",
     setupSubtitle: "Build timelines by placing songs in chronological order!",
@@ -51,6 +58,13 @@ export const translations = {
     playAgain: "Play again"
   },
   es: {
+    // Auth
+    authTitle: "Hitster",
+    authSubtitle: "Por favor ingresa la contraseña para continuar",
+    authPasswordPlaceholder: "Contraseña",
+    authEnterButton: "Entrar",
+    authIncorrectPassword: "Contraseña incorrecta",
+    
     // Game Setup
     setupTitle: "Hitster",
     setupSubtitle: "¡Construye timelines colocando canciones en orden cronológico!",
