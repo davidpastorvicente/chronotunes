@@ -4,6 +4,10 @@
 }
 
 .setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
   margin: auto;
   background: var(--bg-primary);
   padding: 2rem;
@@ -68,10 +72,6 @@
   color: var(--text-secondary);
   margin-bottom: 1.5rem;
   font-weight: 500;
-}
-
-.form-group {
-  margin-bottom: 2rem;
 }
 
 .form-group label {
