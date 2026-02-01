@@ -35,6 +35,21 @@ export default function GameSetup({ onStartGame, language }) {
     setTeamNames(newTeamNames);
   };
 
+  // Handle back navigation
+  const handleBack = () => {
+    if (multiplayerMode === 'joined' || multiplayerMode === 'join' || multiplayerMode === 'config' || multiplayerMode === 'create') {
+      // Go back to multi device mode selection
+      setMultiplayerMode('');
+      setError('');
+      setGameCode('');
+      setJoinCode('');
+    } else if (gameMode === 'single' || (gameMode === 'multi' && multiplayerMode === '')) {
+      // Go back to game mode selection
+      setGameMode('');
+      setMultiplayerMode('');
+    }
+  };
+
   // Single device mode - same as before
   const handleStart = () => {
     onStartGame({
@@ -177,6 +192,12 @@ export default function GameSetup({ onStartGame, language }) {
         <p className="subtitle">{t.setupSubtitle}</p>
         
         <div className="setup-form">
+          {/* Show back button on all screens except the initial game mode selection */}
+          {gameMode !== '' && (
+            <button className="back-button" title={t.back} onClick={handleBack}>
+              ←
+            </button>
+          )}
           {/* Game Mode Selector */}
           {gameMode === '' && (
             <div className="form-group">
@@ -379,6 +400,9 @@ export default function GameSetup({ onStartGame, language }) {
       <div className="game-setup">
         <h1>{t.setupTitle}</h1>
         <div className="setup-form">
+          <button className="back-button" title={t.back} onClick={handleBack}>
+            ←
+          </button>
           <div className="game-code-display">
             <h2>{t.gameCode}</h2>
             <div className="code">{gameCode}</div>
@@ -421,6 +445,9 @@ export default function GameSetup({ onStartGame, language }) {
       <div className="game-setup">
         <h1>{t.setupTitle}</h1>
         <div className="setup-form">
+          <button className="back-button" title={t.back} onClick={handleBack}>
+            ←
+          </button>
           <div className="form-group">
             <label>{t.gameCodeLabel || 'Game Code'}</label>
             <input
@@ -460,6 +487,9 @@ export default function GameSetup({ onStartGame, language }) {
       <div className="game-setup">
         <h1>{t.setupTitle}</h1>
         <div className="setup-form">
+          <button className="back-button" title={t.back} onClick={handleBack}>
+            ←
+          </button>
           <div className="game-code-display">
             <h3>{t.gameCode}</h3>
             <div className="code small">{gameCode}</div>

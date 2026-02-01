@@ -3,6 +3,53 @@
   text-align: center;
 }
 
+.setup-form {
+  margin: auto;
+  background: var(--bg-primary);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 2px solid var(--border-color);
+  box-shadow: 0 4px 6px var(--shadow);
+  max-width: 500px;
+  position: relative;
+}
+
+.back-button {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  z-index: 10;
+}
+
+.back-button:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: translateX(-2px);
+}
+
+.back-button:active {
+  transform: translateX(-2px) scale(0.98);
+}
+
+@media (max-width: 767px) {
+  .back-button {
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
 .game-setup h1 {
   font-size: 3rem;
   margin-top: 0.5rem;
@@ -21,16 +68,6 @@
   color: var(--text-secondary);
   margin-bottom: 1.5rem;
   font-weight: 500;
-}
-
-.setup-form {
-  margin: auto;
-  background: var(--bg-primary);
-  padding: 2rem;
-  border-radius: 16px;
-  border: 2px solid var(--border-color);
-  box-shadow: 0 4px 6px var(--shadow);
-  max-width: 500px;
 }
 
 .form-group {
