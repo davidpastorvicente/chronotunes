@@ -192,7 +192,7 @@ export default function GameBoard({ gameConfig, language, overrideState }) {
                   color: 'var(--text-secondary)' 
                 }}>
                   <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🎵</div>
-                  <div>{t.loadingNextSong || 'Loading next song...'}</div>
+                  <div>{t.loadingNextSong }</div>
                 </div>
               )}
               

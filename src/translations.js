@@ -19,8 +19,8 @@ export const translations = {
     
     // Multiplayer
     gameMode: "Game mode:",
-    singleDevice: "Single Device",
-    multiDevice: "Multiple Devices",
+    singleDevice: "Single device",
+    multiDevice: "Multiple devices",
     multiplayerOptions: "Choose an option:",
     back: "Back",
     createGame: "Create Game",
@@ -59,6 +59,7 @@ export const translations = {
     score: "Score",
     
     // Song Player
+    loadingNextSong: "Loading next song...",
     playSong: "Play",
     playing: "Playing...",
     paused: "Paused",
@@ -108,21 +109,21 @@ export const translations = {
     
     // Multiplayer
     gameMode: "Modo de juego:",
-    singleDevice: "Un Dispositivo",
-    multiDevice: "Múltiples Dispositivos",
+    singleDevice: "Un dispositivo",
+    multiDevice: "Múltiples dispositivos",
     multiplayerOptions: "Elige una opción:",
     back: "Atrás",
-    createGame: "Crear Juego",
-    createGameButton: "Crear Juego",
+    createGame: "Crear juego",
+    createGameButton: "Crear juego",
     joinGame: "Unirse a Juego",
-    hostTeamName: "Nombre de Tu Equipo",
-    gameCode: "Código de Juego:",
-    gameCodeLabel: "Código de Juego",
+    hostTeamName: "Nombre de tu equipo",
+    gameCode: "Código de juego",
+    gameCodeLabel: "Código de juego",
     gameCodePlaceholder: "Ingresa código de 6 dígitos",
-    teamNameLabel: "Nombre de Tu Equipo",
+    teamNameLabel: "Nombre de tu Equipo",
     teamNamePlaceholder: "Ingresa el nombre de tu equipo",
     enterTeamName: "Por favor ingresa el nombre de tu equipo",
-    selectTeam: "Selecciona Tu Equipo:",
+    selectTeam: "Selecciona tu equipo:",
     waitingForPlayers: "Esperando jugadores...",
     waitingForHost: "Esperando que el anfitrión inicie...",
     noPlayersYet: "Esperando que se unan jugadores...",
@@ -135,7 +136,7 @@ export const translations = {
     teamAlreadyTaken: "Equipo ya ocupado",
     yourTurn: "¡Tu Turno!",
     waitingForTurn: "Esperando a",
-    allTimelines: "Todas las Cronologías",
+    allTimelines: "Todas las cronologías",
     
     // Song Sets
     songSetEverything: "Todas",
@@ -148,6 +149,7 @@ export const translations = {
     score: "Puntuación",
     
     // Song Player
+    loadingNextSong: "Cargando la siguiente canción...",
     playSong: "Reproducir",
     playing: "Reproduciendo...",
     paused: "Pausado",
