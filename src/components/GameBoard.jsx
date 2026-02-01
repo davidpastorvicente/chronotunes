@@ -168,7 +168,7 @@ export default function GameBoard({ gameConfig, language, overrideState }) {
   return (
     <div className="game-board">
       <div className="game-header">
-        <h1>Hitster</h1>
+        <h1>TimeSong</h1>
       </div>
 
       {gamePhase === 'gameOver' && winner !== null && (

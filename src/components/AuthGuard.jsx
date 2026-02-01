@@ -9,7 +9,7 @@ export default function AuthGuard({ children, language, onLanguageChange }) {
   const [error, setError] = useState('');
   
   // Check authentication status from sessionStorage
-  const authToken = sessionStorage.getItem('hitster_auth');
+  const authToken = sessionStorage.getItem('timesong_auth');
   const [isAuthenticated, setIsAuthenticated] = useState(authToken === 'authenticated');
   
   const t = translations[language];
@@ -26,7 +26,7 @@ export default function AuthGuard({ children, language, onLanguageChange }) {
     }
     
     if (password === correctPassword) {
-      sessionStorage.setItem('hitster_auth', 'authenticated');
+      sessionStorage.setItem('timesong_auth', 'authenticated');
       setIsAuthenticated(true);
       setError('');
     } else {

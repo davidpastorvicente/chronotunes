@@ -1,14 +1,14 @@
 export const translations = {
   en: {
     // Auth
-    authTitle: "Hitster",
+    authTitle: "TimeSong",
     authSubtitle: "Please enter the password to continue",
     authPasswordPlaceholder: "Password",
     authEnterButton: "Enter",
     authIncorrectPassword: "Incorrect password",
     
     // Game Setup
-    setupTitle: "Hitster",
+    setupTitle: "TimeSong",
     setupSubtitle: "Build timelines by placing songs in chronological order!",
     teamsNumber: "Number of teams:",
     teamNames: "Team names:",
@@ -89,14 +89,14 @@ export const translations = {
   },
   es: {
     // Auth
-    authTitle: "Hitster",
+    authTitle: "TimeSong",
     authSubtitle: "Por favor ingresa la contraseña para continuar",
     authPasswordPlaceholder: "Contraseña",
     authEnterButton: "Entrar",
     authIncorrectPassword: "Contraseña incorrecta",
     
     // Game Setup
-    setupTitle: "Hitster",
+    setupTitle: "TimeSong",
     setupSubtitle: "¡Construye timelines colocando canciones en orden cronológico!",
     teamsNumber: "Número de equipos:",
     teamNames: "Nombres de los equipos:",

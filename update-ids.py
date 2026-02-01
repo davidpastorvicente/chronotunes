@@ -141,7 +141,7 @@ def main():
     ]
     
     print("=" * 60)
-    print("ID Updater for Hitster Game")
+    print("ID Updater for TimeSong Game")
     print("Fetches missing YouTube IDs and Deezer IDs")
     print("=" * 60)
     print()

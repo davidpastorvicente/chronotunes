@@ -1,10 +1,10 @@
-[![Deploy to GitHub Pages](https://github.com/davidpastorvicente/hitster-game/actions/workflows/deploy.yml/badge.svg?branch=master)](https://github.com/davidpastorvicente/hitster-game/actions/workflows/deploy.yml)
+[![Deploy to GitHub Pages](https://github.com/davidpastorvicente/timesong/actions/workflows/deploy.yml/badge.svg?branch=master)](https://github.com/davidpastorvicente/timesong/actions/workflows/deploy.yml)
 
-# Hitster Game
+# TimeSong Game
 
 A music guessing game where teams build timelines by placing songs in chronological order.
 
-![Hitster Logo](screenshot.png)
+![TimeSong Logo](screenshot.png)
 
 ## 🎮 How to Play
 

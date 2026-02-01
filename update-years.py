@@ -76,7 +76,7 @@ def main():
     ]
     
     print("=" * 70)
-    print("Year Validator & Updater for Hitster Game")
+    print("Year Validator & Updater for TimeSong Game")
     print("Validates song years against Deezer API")
     print("=" * 70)
     print()
