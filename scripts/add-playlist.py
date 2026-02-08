@@ -276,9 +276,10 @@ def load_existing_songs(language='en'):
         with open(filename, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # Extract existing song titles
+        # Extract existing song titles and convert to lowercase for case-insensitive comparison
         pattern = r'title:\s*"([^"]+)"'
-        titles = set(re.findall(pattern, content))
+        titles_raw = re.findall(pattern, content)
+        titles = set(title.lower() for title in titles_raw)
         
         return titles, content, filename
         
@@ -287,7 +288,7 @@ def load_existing_songs(language='en'):
         sys.exit(1)
 
 def filter_duplicates(songs, existing_titles):
-    """Filter out songs that already exist in the database"""
+    """Filter out songs that already exist in the database (case-insensitive)"""
     unique_songs = []
     duplicates = []
     
@@ -296,7 +297,8 @@ def filter_duplicates(songs, existing_titles):
         # Clean title for comparison
         clean_title = title.split('(feat.')[0].split('(ft.')[0].strip()
         
-        if title in existing_titles or clean_title in existing_titles:
+        # Case-insensitive comparison
+        if title.lower() in existing_titles or clean_title.lower() in existing_titles:
             duplicates.append(title)
         else:
             unique_songs.append(song)
