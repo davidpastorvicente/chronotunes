@@ -15,12 +15,12 @@ End-to-end script that:
 10. Appends to src/data/english.js or src/data/spanish.js
 
 Usage:
-    python3 add-playlist.py PLAYLIST_ID [--language en|es] [--limit N]
+    python3 scripts/add-playlist.py PLAYLIST_ID [--language en|es] [--limit N]
     
 Example:
-    python3 add-playlist.py PLDEoYTx7cT4dC7dkTTYi1exK5iYVtBw0B
-    python3 add-playlist.py PLDEoYTx7cT4dC7dkTTYi1exK5iYVtBw0B --limit 50  # Import 50 successful songs
-    python3 add-playlist.py PLDEoYTx7cT4dC7dkTTYi1exK5iYVtBw0B --language es --limit 30
+    python3 scripts/add-playlist.py PLDEoYTx7cT4dC7dkTTYi1exK5iYVtBw0B
+    python3 scripts/add-playlist.py PLDEoYTx7cT4dC7dkTTYi1exK5iYVtBw0B --limit 50
+    python3 scripts/add-playlist.py PLDEoYTx7cT4dC7dkTTYi1exK5iYVtBw0B --language es --limit 30
 
 Options:
     --limit N      Process until N songs are successfully imported
@@ -44,8 +44,10 @@ import re
 import sys
 import time
 
-import requests
 from ytmusicapi import YTMusic
+
+# Import common utilities
+from common import fetch_youtube_data, get_deezer_data_with_year, clean_artist_name
 
 
 def extract_playlist_id(url_or_id):
@@ -78,112 +80,6 @@ def fetch_playlist_tracks(playlist_id):
         print(f"❌ Error fetching playlist: {e}")
         sys.exit(1)
 
-def clean_artist_name(artists_list):
-    """Extract primary artist from YouTube Music artist list"""
-    if not artists_list:
-        return "Unknown"
-    
-    # Get first artist(s), max 2
-    if len(artists_list) > 1:
-        return ', '.join([a.get('name', '') for a in artists_list[:2]])
-    
-    return artists_list[0].get('name', 'Unknown')
-
-def fetch_youtube_id(ytmusic, title, artist):
-    """
-    Fetch YouTube ID by searching YouTube Music
-    Returns tuple: (video_id, youtube_title, youtube_artist) or (None, None, None)
-    This ensures we get the best/official version of the song with accurate metadata
-    """
-    try:
-        search_query = f"{title} {artist}"
-        search_results = ytmusic.search(search_query, filter="songs", limit=1)
-        
-        if search_results and len(search_results) > 0:
-            result = search_results[0]
-            video_id = result.get('videoId')
-            youtube_title = result.get('title', title)  # Fallback to original
-            
-            # Get artist from YouTube (might be list or string)
-            youtube_artists = result.get('artists', [])
-            if isinstance(youtube_artists, list) and len(youtube_artists) > 0:
-                youtube_artist = youtube_artists[0].get('name', artist)
-            else:
-                youtube_artist = artist  # Fallback to original
-            
-            return video_id, youtube_title, youtube_artist
-        return None, None, None
-    except Exception as e:
-        print(f"    ⚠️  YouTube search error: {e}")
-        return None, None, None
-
-def get_deezer_data_with_year(title, artist):
-    """
-    Fetch Deezer ID, album cover, and release year
-    Filters out remasters/compilations
-    """
-    try:
-        search_query = f"{title} {artist}"
-        url = "https://api.deezer.com/search"
-        params = {'q': search_query, 'limit': 10}
-        
-        response = requests.get(url, params=params, timeout=10)
-        
-        if response.status_code != 200:
-            return None
-        
-        data = response.json()
-        
-        if not data.get('data'):
-            return None
-        
-        # Find best match (non-remaster, earliest release)
-        best_match = None
-        earliest_year = None
-        
-        for track in data['data']:
-            album_title = track.get('album', {}).get('title', '').lower()
-            
-            # Skip obvious remasters/compilations
-            skip_keywords = ['remaster', 'deluxe', 'edition', 'anniversary', 
-                           'greatest', 'best of', 'compilation', 'hits']
-            if any(keyword in album_title for keyword in skip_keywords):
-                continue
-            
-            # Get album details for release date
-            album_id = track.get('album', {}).get('id')
-            if not album_id:
-                continue
-            
-            try:
-                album_url = f"https://api.deezer.com/album/{album_id}"
-                album_data = requests.get(album_url, timeout=10).json()
-                release_date = album_data.get('release_date', '')
-                
-                if not release_date:
-                    continue
-                
-                year = int(release_date.split('-')[0])
-                
-                # Skip unrealistic years
-                if year < 1950 or year > 2026:
-                    continue
-                
-                # Track earliest (most likely original)
-                if earliest_year is None or year < earliest_year:
-                    earliest_year = year
-                    best_match = {
-                        'deezerId': str(track['id']),
-                        'year': year,
-                        'album': album_title
-                    }
-            except:
-                continue
-        
-        return best_match
-        
-    except Exception:
-        return None
 
 def process_tracks(tracks, limit=None):
     """Process playlist tracks and get metadata
@@ -222,7 +118,7 @@ def process_tracks(tracks, limit=None):
         
         # Search for YouTube ID (instead of using playlist's video ID)
         # This also gets the canonical title and artist from YouTube
-        video_id, youtube_title, youtube_artist = fetch_youtube_id(ytmusic, clean_title, artist)
+        video_id, youtube_title, youtube_artist = fetch_youtube_data(ytmusic, clean_title, artist)
         
         if not video_id:
             print(f"    ❌ No YouTube video ID found")

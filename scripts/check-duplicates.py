@@ -19,8 +19,10 @@ import sys
 import time
 from collections import defaultdict
 
-import requests
 from ytmusicapi import YTMusic
+
+# Import common utilities
+from common import fetch_youtube_id, fetch_deezer_id
 
 
 def load_songs_from_file(filename):
@@ -52,40 +54,6 @@ def load_songs_from_file(filename):
     except FileNotFoundError:
         print(f"❌ File not found: {filename}")
         return []
-
-
-def fetch_youtube_id(ytmusic, title, artist):
-    """Fetch YouTube ID by searching YouTube Music"""
-    try:
-        search_query = f"{title} {artist}"
-        search_results = ytmusic.search(search_query, filter="songs", limit=1)
-        
-        if search_results and len(search_results) > 0:
-            result = search_results[0]
-            video_id = result.get('videoId')
-            return video_id
-        return None
-    except Exception as e:
-        print(f"      ⚠️  YouTube search error: {e}")
-        return None
-
-
-def fetch_deezer_id(title, artist):
-    """Fetch Deezer ID by searching Deezer API"""
-    try:
-        search_query = f"{title} {artist}"
-        url = f"https://api.deezer.com/search/track?q={search_query}"
-        response = requests.get(url, timeout=10)
-        data = response.json()
-        
-        if 'data' in data and len(data['data']) > 0:
-            track = data['data'][0]
-            deezer_id = str(track['id'])
-            return deezer_id
-        return None
-    except Exception as e:
-        print(f"      ⚠️  Deezer search error: {e}")
-        return None
 
 
 def refetch_ids_for_duplicates(duplicate_songs, id_type):

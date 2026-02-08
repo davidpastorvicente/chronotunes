@@ -9,10 +9,12 @@ Usage:
 """
 
 from ytmusicapi import YTMusic
-import requests
 import re
 import sys
 import time
+
+# Import common utilities
+from common import fetch_youtube_id, fetch_deezer_id
 
 def extract_songs_from_file(filepath):
     """Extract all songs from the data file."""
@@ -35,37 +37,6 @@ def extract_songs_from_file(filepath):
     
     return songs, content
 
-def fetch_youtube_id(ytmusic, title, artist):
-    """Fetch YouTube ID by searching YouTube Music"""
-    try:
-        search_query = f"{title} {artist}"
-        search_results = ytmusic.search(search_query, filter="songs", limit=1)
-
-        if search_results and len(search_results) > 0:
-            result = search_results[0]
-            video_id = result.get('videoId')
-            return video_id
-        return None
-    except Exception as e:
-        print(f"      ⚠️  YouTube search error: {e}")
-        return None
-
-def fetch_deezer_id(title, artist):
-    """Fetch Deezer ID by searching Deezer API"""
-    try:
-        search_query = f"{title} {artist}"
-        url = f"https://api.deezer.com/search/track?q={search_query}"
-        response = requests.get(url, timeout=10)
-        data = response.json()
-
-        if 'data' in data and len(data['data']) > 0:
-            track = data['data'][0]
-            deezer_id = str(track['id'])
-            return deezer_id
-        return None
-    except Exception as e:
-        print(f"      ⚠️  Deezer search error: {e}")
-        return None
 
 def update_songs_file(filepath, youtube_updates, deezer_updates):
     """Update the data file with new YouTube IDs and Deezer IDs."""
