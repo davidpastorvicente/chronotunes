@@ -174,7 +174,6 @@ def get_deezer_data_with_year(title, artist):
                     earliest_year = year
                     best_match = {
                         'deezerId': str(track['id']),
-                        'albumCover': track.get('album', {}).get('cover_medium'),
                         'year': year,
                         'album': album_title
                     }
@@ -252,8 +251,7 @@ def process_tracks(tracks, limit=None):
             'artist': youtube_artist,  # Use YouTube's canonical artist
             'year': deezer_data['year'],
             'youtubeId': video_id,
-            'deezerId': deezer_data['deezerId'],
-            'albumCover': deezer_data['albumCover']
+            'deezerId': deezer_data['deezerId']
         }
         
         processed_songs.append(song)
@@ -309,9 +307,8 @@ def format_song_line(song):
     """Format a song as a JavaScript object line"""
     title = song['title'].replace('"', '\\"')
     artist = song['artist'].replace('"', '\\"')
-    album_cover = song['albumCover'].replace('"', '\\"') if song['albumCover'] else ''
     
-    return f'  {{ title: "{title}", artist: "{artist}", year: {song["year"]}, youtubeId: "{song["youtubeId"]}", deezerId: "{song["deezerId"]}", albumCover: "{album_cover}" }},'
+    return f'  {{ title: "{title}", artist: "{artist}", year: {song["year"]}, youtubeId: "{song["youtubeId"]}", deezerId: "{song["deezerId"]}" }},'
 
 def append_songs_to_file(songs, content, filename):
     """Append songs to the data file"""
