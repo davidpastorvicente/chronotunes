@@ -1,24 +1,26 @@
 #!/usr/bin/env python3
 """
-Script to automatically fetch missing YouTube IDs, Deezer IDs, preview URLs, and album covers for songs in songs.js
+Script to automatically fetch missing YouTube IDs and Deezer IDs for songs in the database
 Uses ytmusicapi for YouTube Music and Deezer API for Deezer tracks.
 
 Usage:
-    python3 update-ids.py
+    python3 scripts/update-ids.py           # Only fetch missing IDs
+    python3 scripts/update-ids.py --force   # Re-fetch all IDs, even if present
 """
 
 from ytmusicapi import YTMusic
 import requests
 import re
+import sys
 import time
 
 def extract_songs_from_file(filepath):
-    """Extract all songs from the songs.js file."""
+    """Extract all songs from the data file."""
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Pattern to match songs with optional fields (no deezerPreview)
-    pattern = r'\{\s*title:\s*"([^"]+)",\s*artist:\s*"([^"]+)",\s*year:\s*(\d+)(?:,\s*youtubeId:\s*"([^"]*)")?(?:,\s*deezerId:\s*"([^"]*)")?(?:,\s*albumCover:\s*"([^"]*)")?\s*\}'
+    # Pattern to match songs with optional fields
+    pattern = r'\{\s*title:\s*"([^"]+)",\s*artist:\s*"([^"]+)",\s*year:\s*(\d+)(?:,\s*youtubeId:\s*"([^"]*)")?(?:,\s*deezerId:\s*"([^"]*)")?\s*\}'
     
     songs = []
     for match in re.finditer(pattern, content):
@@ -27,8 +29,7 @@ def extract_songs_from_file(filepath):
             'artist': match.group(2),
             'year': int(match.group(3)),
             'youtubeId': match.group(4) if match.group(4) else None,
-            'deezerId': match.group(5) if match.group(5) else None,
-            'albumCover': match.group(6) if match.group(6) else None
+            'deezerId': match.group(5) if match.group(5) else None
         }
         songs.append(song)
     
@@ -49,7 +50,7 @@ def fetch_youtube_id(ytmusic, title, artist):
         return None
 
 def fetch_deezer_data(title, artist):
-    """Fetch Deezer track ID and album cover from Deezer API (preview URLs expire, so we fetch at runtime)."""
+    """Fetch Deezer track ID from Deezer API."""
     try:
         search_query = f"{title} {artist}"
         url = "https://api.deezer.com/search"
@@ -62,10 +63,7 @@ def fetch_deezer_data(title, artist):
             
             if data.get('data') and len(data['data']) > 0:
                 track = data['data'][0]
-                return {
-                    'deezerId': str(track['id']),
-                    'albumCover': track.get('album', {}).get('cover_medium')
-                }
+                return str(track['id'])
         
         return None
         
@@ -74,7 +72,7 @@ def fetch_deezer_data(title, artist):
         return None
 
 def update_songs_file(filepath, youtube_updates, deezer_updates):
-    """Update the songs.js file with new YouTube IDs, Deezer IDs, and album covers (no preview URLs)."""
+    """Update the data file with new YouTube IDs and Deezer IDs."""
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
     
@@ -92,7 +90,7 @@ def update_songs_file(filepath, youtube_updates, deezer_updates):
         
         # If no change, song doesn't have youtubeId yet, add it
         if new_content == content:
-            pattern_without_id = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+)((?:,\s*(?:deezerId|albumCover):\s*"[^"]*")*\s*\}})'
+            pattern_without_id = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+)((?:,\s*deezerId:\s*"[^"]*")*\s*\}})'
             
             def replacer_without_id(match):
                 return match.group(1) + f', youtubeId: "{youtube_id}"' + match.group(2)
@@ -106,11 +104,9 @@ def update_songs_file(filepath, youtube_updates, deezer_updates):
         
         content = new_content
     
-    # Then, update Deezer data (ID and album cover only, no preview)
-    for song_key, deezer_data in deezer_updates.items():
+    # Then, update Deezer IDs
+    for song_key, deezer_id in deezer_updates.items():
         title, artist = song_key
-        deezer_id = deezer_data['deezerId']
-        album_cover = deezer_data.get('albumCover', '')
         
         # Update deezerId
         pattern_with_id = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*",\s*deezerId:\s*")[^"]*(")' 
@@ -122,7 +118,7 @@ def update_songs_file(filepath, youtube_updates, deezer_updates):
         
         # If no change, add deezerId
         if new_content == content:
-            pattern_without_id = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*")((?:,\s*albumCover:\s*"[^"]*")*\s*\}})'
+            pattern_without_id = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*")(\s*\}})'
             
             def replacer_without_id(match):
                 return match.group(1) + f', deezerId: "{deezer_id}"' + match.group(2)
@@ -135,35 +131,15 @@ def update_songs_file(filepath, youtube_updates, deezer_updates):
             )
         
         content = new_content
-        
-        # Update or add albumCover
-        if album_cover:
-            pattern_with_cover = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*",\s*deezerId:\s*"[^"]*",\s*albumCover:\s*")[^"]*(")' 
-            
-            def replacer_with_cover(match):
-                return match.group(1) + album_cover + match.group(2)
-            
-            new_content = re.sub(pattern_with_cover, replacer_with_cover, content, flags=re.DOTALL)
-            
-            if new_content == content:
-                pattern_without_cover = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*",\s*deezerId:\s*"[^"]*")(\s*\}})'
-                
-                def replacer_without_cover(match):
-                    return match.group(1) + f', albumCover: "{album_cover}"' + match.group(2)
-                
-                new_content = re.sub(
-                    pattern_without_cover, 
-                    replacer_without_cover, 
-                    content, 
-                    flags=re.DOTALL
-                )
-            
-            content = new_content
     
     with open(filepath, 'w', encoding='utf-8') as f:
         f.write(content)
 
 def main():
+    # Check for --force flag
+    force_mode = '--force' in sys.argv
+    
+    youtube_failed, deezer_failed = False, False
     filepaths = [
         'src/data/english.js',
         'src/data/spanish.js'
@@ -171,7 +147,9 @@ def main():
     
     print("=" * 60)
     print("ID Updater for TimeSong Game")
-    print("Fetches YouTube IDs, Deezer IDs, and album covers")
+    print("Fetches YouTube IDs and Deezer IDs")
+    if force_mode:
+        print("🔄 FORCE MODE: Re-fetching all IDs")
     print("=" * 60)
     print()
     
@@ -185,37 +163,52 @@ def main():
         songs, content = extract_songs_from_file(filepath)
         print(f"✓ Found {len(songs)} songs in file\n")
         
-        # Find songs without YouTube IDs or complete Deezer data
-        missing_youtube = [s for s in songs if not s['youtubeId'] or s['youtubeId'].strip() == '']
-        missing_deezer = [s for s in songs if not s['deezerId'] or s['deezerId'].strip() == '' or not s['albumCover']]
-        
-        if not missing_youtube and not missing_deezer:
-            print("✅ All songs already have YouTube IDs and complete Deezer data!")
-            continue
-        
-        print(f"🔍 Found {len(missing_youtube)} songs without YouTube IDs")
-        print(f"🔍 Found {len(missing_deezer)} songs without complete Deezer data\n")
+        # Find songs to process
+        if force_mode:
+            # Force mode: process all songs
+            missing_youtube = songs
+            missing_deezer = songs
+            print("🔄 Force mode: Processing all songs\n")
+        else:
+            # Normal mode: only process songs without IDs
+            missing_youtube = [s for s in songs if not s['youtubeId'] or s['youtubeId'].strip() == '']
+            missing_deezer = [s for s in songs if not s['deezerId'] or s['deezerId'].strip() == '']
+            
+            if not missing_youtube and not missing_deezer:
+                print("✅ All songs already have YouTube IDs and Deezer IDs!")
+                print("   (Use --force to re-fetch all IDs)\n")
+                continue
+            
+            print(f"🔍 Found {len(missing_youtube)} songs without YouTube IDs")
+            print(f"🔍 Found {len(missing_deezer)} songs without Deezer IDs\n")
         
         youtube_updates = {}
         youtube_failed = []
         deezer_updates = {}
         deezer_failed = []
         
-        # Fetch missing YouTube IDs
+        # Fetch YouTube IDs
         if missing_youtube:
             print("🎵 Initializing YouTube Music API...")
             ytmusic = YTMusic()
             print("✓ YouTube API ready\n")
             
-            print("🔎 Fetching missing YouTube IDs...\n")
+            mode_msg = "YouTube IDs" if not force_mode else "all YouTube IDs"
+            print(f"🔎 Fetching {mode_msg}...\n")
             for i, song in enumerate(missing_youtube, 1):
+                current_id = song.get('youtubeId', 'none')
                 print(f"[{i}/{len(missing_youtube)}] {song['title']} - {song['artist']}")
+                if force_mode and current_id and current_id.strip():
+                    print(f"    Current: {current_id}")
                 
                 youtube_id = fetch_youtube_id(ytmusic, song['title'], song['artist'])
                 
                 if youtube_id:
                     youtube_updates[(song['title'], song['artist'])] = youtube_id
-                    print(f"  ✓ YouTube: {youtube_id}")
+                    if force_mode and current_id and current_id.strip() and youtube_id != current_id:
+                        print(f"  ✓ YouTube: {youtube_id} (replaced)")
+                    else:
+                        print(f"  ✓ YouTube: {youtube_id}")
                 else:
                     youtube_failed.append(song)
                     print(f"  ✗ YouTube: Not found")
@@ -226,21 +219,24 @@ def main():
             
             print()
         
-        # Fetch missing Deezer data
+        # Fetch Deezer IDs
         if missing_deezer:
-            print("🎧 Fetching missing Deezer data (IDs, previews, covers)...\n")
+            mode_msg = "Deezer IDs" if not force_mode else "all Deezer IDs"
+            print(f"🎧 Fetching {mode_msg}...\n")
             for i, song in enumerate(missing_deezer, 1):
+                current_id = song.get('deezerId', 'none')
                 print(f"[{i}/{len(missing_deezer)}] {song['title']} - {song['artist']}")
+                if force_mode and current_id and current_id.strip():
+                    print(f"    Current: {current_id}")
                 
-                deezer_data = fetch_deezer_data(song['title'], song['artist'])
+                deezer_id = fetch_deezer_data(song['title'], song['artist'])
                 
-                if deezer_data:
-                    deezer_updates[(song['title'], song['artist'])] = deezer_data
-                    print(f"  ✓ Deezer ID: {deezer_data['deezerId']}")
-                    if deezer_data.get('deezerPreview'):
-                        print(f"  ✓ Preview: {deezer_data['deezerPreview'][:50]}...")
-                    if deezer_data.get('albumCover'):
-                        print(f"  ✓ Cover: {deezer_data['albumCover'][:50]}...")
+                if deezer_id:
+                    deezer_updates[(song['title'], song['artist'])] = deezer_id
+                    if force_mode and current_id and current_id.strip() and deezer_id != current_id:
+                        print(f"  ✓ Deezer ID: {deezer_id} (replaced)")
+                    else:
+                        print(f"  ✓ Deezer ID: {deezer_id}")
                 else:
                     deezer_failed.append(song)
                     print(f"  ✗ Deezer: Not found")
@@ -254,7 +250,7 @@ def main():
         print("=" * 60)
         print("RESULTS:")
         print(f"  YouTube IDs - Successfully fetched: {len(youtube_updates)}, Failed: {len(youtube_failed)}")
-        print(f"  Deezer Data - Successfully fetched: {len(deezer_updates)}, Failed: {len(deezer_failed)}")
+        print(f"  Deezer IDs - Successfully fetched: {len(deezer_updates)}, Failed: {len(deezer_failed)}")
         print("=" * 60)
         print()
         
@@ -266,7 +262,7 @@ def main():
             if youtube_updates:
                 print(f"  - Added/updated {len(youtube_updates)} YouTube IDs")
             if deezer_updates:
-                print(f"  - Added/updated {len(deezer_updates)} Deezer entries (ID, preview, cover)")
+                print(f"  - Added/updated {len(deezer_updates)} Deezer IDs")
         
         # Show failed songs
         if youtube_failed:
@@ -275,7 +271,7 @@ def main():
                 print(f"  - {song['title']} by {song['artist']} ({song['year']})")
         
         if deezer_failed:
-            print("\n⚠️  Failed to find Deezer data for:")
+            print("\n⚠️  Failed to find Deezer IDs for:")
             for song in deezer_failed:
                 print(f"  - {song['title']} by {song['artist']} ({song['year']})")
     
