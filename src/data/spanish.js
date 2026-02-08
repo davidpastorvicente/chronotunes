@@ -160,7 +160,7 @@ export const spanishSongs = [
   { title: "La Perla", artist: "Rosalía", year: 2025, youtubeId: "w7pjt9ZH3NM", deezerId: "3640140952" },
   { title: "Relación", artist: "Sech ft. Daddy Yankee & J Balvin", year: 2020, youtubeId: "wCmy-1aJ1G0", deezerId: "1066959132" },
   { title: "Otro Trago", artist: "Sech ft. Darell", year: 2019, youtubeId: "C7vfCJTQ-rw", deezerId: "664101732" },
-  { title: "911", artist: "Sech ft. Anuel AA", year: 2021, youtubeId: "8lhf_VPlWbs", deezerId: "715415322" },
+  { title: "911", artist: "Sech ft. Anuel AA", year: 2021, youtubeId: "8lhf_VPlWbs", deezerId: "1183437342" },
   { title: "Pareja del Año", artist: "Sebastián Yatra ft. Myke Towers", year: 2021, youtubeId: "bQZhDdme-R0", deezerId: "1331984152" },
   { title: "Chica Ideal", artist: "Sebastián Yatra ft. Guaynaa", year: 2020, youtubeId: "_9p0mIzbJnM", deezerId: "1103857162" },
 

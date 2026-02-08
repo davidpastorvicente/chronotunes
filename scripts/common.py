@@ -180,47 +180,6 @@ def get_deezer_data_with_year(title, artist):
         return None
 
 
-def fetch_deezer_year(deezer_id):
-    """
-    Fetch release year for a Deezer track ID
-    
-    Args:
-        deezer_id: Deezer track ID
-    
-    Returns:
-        int: Release year if found, None otherwise
-    """
-    try:
-        track_url = f"https://api.deezer.com/track/{deezer_id}"
-        response = requests.get(track_url, timeout=10)
-        
-        if response.status_code != 200:
-            return None
-        
-        track_data = response.json()
-        album_id = track_data.get('album', {}).get('id')
-        
-        if not album_id:
-            return None
-        
-        album_url = f"https://api.deezer.com/album/{album_id}"
-        album_response = requests.get(album_url, timeout=10)
-        
-        if album_response.status_code != 200:
-            return None
-        
-        album_data = album_response.json()
-        release_date = album_data.get('release_date', '')
-        
-        if release_date:
-            year = int(release_date.split('-')[0])
-            return year
-        
-        return None
-    except Exception:
-        return None
-
-
 def clean_artist_name(artists):
     """
     Clean artist name from YouTube Music API response

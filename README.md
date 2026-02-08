@@ -98,6 +98,21 @@ python3 scripts/check-duplicates.py --fix
 
 This will update the data files with the correct IDs.
 
+### Validating Song Titles
+
+Validate that song titles in the database match Deezer API:
+
+```bash
+python3 scripts/check-titles.py
+```
+
+This will:
+- Fetch the actual title from Deezer API using each song's `deezerId`
+- Compare it with the title stored in the database
+- Flag any mismatches (ignoring accents, case, and special characters)
+
+**Note:** Some mismatches are acceptable (e.g., remaster notes, featured artists). The database intentionally keeps cleaner titles while Deezer includes extra metadata like "(Remastered 2015)" or "(feat. Artist)".
+
 ### Adding Songs from YouTube Playlists
 
 Use the automated script to add entire playlists:
