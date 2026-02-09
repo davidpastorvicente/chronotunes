@@ -243,7 +243,10 @@ export default function GameSetup({ onStartGame, language }) {
   if (gameMode === '' || (gameMode === 'single' && multiplayerMode === '') || (gameMode === 'multi' && (multiplayerMode === '' || multiplayerMode === 'config'))) {
     return (
       <div className="game-setup">
-        <h1>{t.setupTitle}</h1>
+        <h1>
+          <img src={import.meta.env.BASE_URL + 'logo.svg'} alt="TimeSong" className="title-logo" />
+          {t.setupTitle}
+        </h1>
         <p className="subtitle">{t.setupSubtitle}</p>
         
         <div className="setup-form">

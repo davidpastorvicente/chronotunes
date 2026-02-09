@@ -1,0 +1,26 @@
+<svg width="512" height="512" viewBox="0 0 512 512"
+     xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="64" fill="#1e1e2f"/>
+
+  <!-- Timeline (thicker) -->
+  <line x1="88" y1="388" x2="424" y2="388"
+        stroke="#ffffff"
+        stroke-width="20"
+        stroke-linecap="round"/>
+
+  <!-- Timeline dots (slightly bigger) -->
+  <circle cx="192" cy="388" r="18" fill="#ffcc00"/>
+  <circle cx="320" cy="388" r="18" fill="#ffcc00"/>
+
+  <!-- Vinyl disk (a bit bigger) -->
+  <circle cx="256" cy="220" r="140" fill="#000000"/>
+  <circle cx="256" cy="220" r="44" fill="#ffcc00"/>
+  <circle cx="256" cy="220" r="12" fill="#000000"/>
+
+  <!-- Vinyl grooves -->
+  <circle cx="256" cy="220" r="104" fill="none" stroke="#222" stroke-width="5"/>
+  <circle cx="256" cy="220" r="84" fill="none" stroke="#222" stroke-width="5"/>
+
+</svg>

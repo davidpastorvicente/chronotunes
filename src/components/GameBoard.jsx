@@ -149,7 +149,10 @@ export default function GameBoard({ gameConfig, language, overrideState }) {
   return (
     <div className="game-board">
       <div className="game-header">
-        <h1>TimeSong</h1>
+        <h1>
+          <img src={import.meta.env.BASE_URL + 'logo.svg'} alt="TimeSong" className="title-logo" />
+          TimeSong
+        </h1>
       </div>
 
       {gamePhase === 'gameOver' && winner !== null && (
