@@ -5,6 +5,14 @@ import ThemeToggle from './ThemeToggle';
 import './AuthGuard.css';
 
 export default function AuthGuard({ children, language, onLanguageChange }) {
+  // Check if authentication is required via environment variable
+  const disableAuth = import.meta.env.VITE_DISABLE_AUTH === 'true';
+  
+  // If auth is not required, render children directly
+  if (disableAuth) {
+    return children;
+  }
+  
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   
