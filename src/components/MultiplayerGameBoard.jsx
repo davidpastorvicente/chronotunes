@@ -1,14 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { subscribeToGame, updateGameState, updatePlayerData, setHostDevice } from '../services/gameSession';
-import { songSets } from '../data/songs';
-import { movieSets } from '../data/movies';
 import { translations } from '../translations';
 import { fetchDeezerPreview } from '../utils/deezer';
+import { loadMediaByCategory } from '../utils/mediaLoader';
 import GameBoard from './GameBoard';
 import './MultiplayerGameBoard.css';
 
 export default function MultiplayerGameBoard({ gameConfig, language, onTurnIndicatorChange }) {
-  const { mode, gameCode, myPlayerIndex, deviceId, isHost, category } = gameConfig;
+  const { mode, gameCode, myPlayerIndex, deviceId, isHost } = gameConfig;
   const [gameData, setGameData] = useState(null);
   const [isMyTurn, setIsMyTurn] = useState(false);
   const initializingRef = useRef(false);
@@ -19,20 +18,14 @@ export default function MultiplayerGameBoard({ gameConfig, language, onTurnIndic
     initializingRef.current = true;
     
     const { contentSet, category } = gameConfig;
-    let selectedMedia;
-    
-    if (category === 'songs') {
-      selectedMedia = songSets[contentSet]?.songs || songSets.everything.songs;
-    } else if (category === 'movies') {
-      selectedMedia = movieSets[contentSet]?.movies || movieSets.everything.movies;
-    }
+    const selectedMedia = loadMediaByCategory(category, contentSet);
     
     // Draw first item
     const randomIndex = Math.floor(Math.random() * selectedMedia.length);
     const item = selectedMedia[randomIndex];
-    
+
     let firstItem;
-    if (category === 'songs') {
+    if (item.artist) {
       // Fetch Deezer preview URL at runtime (they expire after ~24h)
       const { previewUrl, albumCover } = await fetchDeezerPreview(item);
       firstItem = { ...item, previewUrl, albumCover };
@@ -40,7 +33,7 @@ export default function MultiplayerGameBoard({ gameConfig, language, onTurnIndic
       firstItem = item;
     }
 
-    const idField = category === 'songs' ? 'youtubeId' : 'tmdbId';
+    const idField = item.artist ? 'youtubeId' : 'tmdbId';
     
     // Initialize game state in Firebase
     await updateGameState(gameCode, {
@@ -186,7 +179,8 @@ export default function MultiplayerGameBoard({ gameConfig, language, onTurnIndic
     // Small delay to ensure all clients see loading state
     await new Promise(resolve => setTimeout(resolve, 100));
     
-    const idField = category === 'songs' ? 'youtubeId' : 'tmdbId';
+    // Detect item type for mixed category
+    const idField = nextItem.artist ? 'youtubeId' : 'tmdbId';
     
     await updateGameState(gameCode, {
       currentPlayerIndex: nextPlayerIndex,
@@ -237,16 +231,12 @@ function MultiplayerGameBoardActive({ gameConfig, gameData, language, onPlaceIte
     if (!isMyTurn) return; // Prevent turn advance if not my turn
     
     // Draw new item
-    let selectedMedia;
-    if (category === 'songs') {
-      selectedMedia = songSets[contentSet]?.songs || songSets.everything.songs;
-    } else if (category === 'movies') {
-      selectedMedia = movieSets[contentSet]?.movies || movieSets.everything.movies;
-    }
+    const selectedMedia = loadMediaByCategory(category, contentSet);
     
-    const idField = category === 'songs' ? 'youtubeId' : 'tmdbId';
+    // Filter based on item type (auto-detect for 'all' category)
+    const getItemId = (item) => item.artist ? item.youtubeId : item.tmdbId;
     const availableToPlay = selectedMedia.filter(item => 
-      !gameData.state.usedItemIds.includes(item[idField])
+      !gameData.state.usedItemIds.includes(getItemId(item))
     );
 
     if (availableToPlay.length === 0) {
@@ -258,7 +248,7 @@ function MultiplayerGameBoardActive({ gameConfig, gameData, language, onPlaceIte
     const item = availableToPlay[randomIndex];
 
     let nextItem;
-    if (category === 'songs') {
+    if (item.artist) {
       // Fetch Deezer preview URL at runtime (they expire after ~24h)
       const { previewUrl, albumCover } = await fetchDeezerPreview(item);
       nextItem = { ...item, previewUrl, albumCover };

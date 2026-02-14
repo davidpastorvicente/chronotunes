@@ -22,6 +22,12 @@ function CategorySelector({ category, setCategory, t }) {
         >
           🎬 {t.categoryMovies}
         </button>
+        <button
+          className={category === 'all' ? 'active' : ''}
+          onClick={() => setCategory('all')}
+        >
+          🎭 {t.categoryAll}
+        </button>
       </div>
     </div>
   );
@@ -265,10 +271,14 @@ export default function GameSetup({ onStartGame, language }) {
     });
   };
 
-  const handleCopyCode = () => {
-    navigator.clipboard.writeText(gameCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(gameCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
   };
 
   // Show game mode selector and setup

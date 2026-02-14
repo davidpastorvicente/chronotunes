@@ -75,7 +75,7 @@ function getColorForPlayerItem(playerId, item) {
   return playerColors.get(itemKey);
 }
 
-export default function Timeline({ timeline = [], language, playerId = 0, category}) {
+export default function Timeline({ timeline = [], language, playerId = 0}) {
   const t = translations[language];
 
   if (!timeline || timeline.length === 0) {
@@ -108,8 +108,8 @@ export default function Timeline({ timeline = [], language, playerId = 0, catego
             {group.map((item, itemIndex) => {
               const colors = getColorForPlayerItem(playerId, item);
               return (
-                <div 
-                  key={itemIndex} 
+                <div
+                  key={itemIndex}
                   className="item-card"
                   style={{
                     background: `linear-gradient(135deg, ${colors.start} 0%, ${colors.end} 100%)`
@@ -117,10 +117,10 @@ export default function Timeline({ timeline = [], language, playerId = 0, catego
                 >
                   <div className="item-info">
                     <div className="item-title">{item.title}</div>
-                    {category === 'songs' && item.artist && (
+                    {item.artist && (
                       <div className="item-subtitle">{item.artist}</div>
                     )}
-                    {category === 'movies' && item.type && (
+                    {item.type && (
                       <div className="item-subtitle">
                         {item.type === 'movie' ? t.movie : t.tvShow}
                       </div>

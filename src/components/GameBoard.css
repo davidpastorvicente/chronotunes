@@ -232,19 +232,19 @@
   border-top: 2px solid rgba(255, 255, 255, 0.3);
 }
 
-.item-title {
+.item-details .item-title {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
 
-.item-subtitle {
+.item-details .item-subtitle {
   font-size: 1.2rem;
   opacity: 0.9;
   margin-bottom: 0.5rem;
 }
 
-.item-year {
+.item-details .item-year {
   font-size: 1.8rem;
   font-weight: bold;
   margin-top: 0.5rem;
